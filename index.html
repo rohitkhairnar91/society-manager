@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Society Manager</title>
+<meta name="theme-color" content="#0f5c4d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea; --card:#ffffff; --ink:#1d2421; --muted:#6b736f; --line:#e6e1d6;
+  --pri:#0f5c4d; --pri-2:#13745f; --pri-soft:#e3f0ec;
+  --amber:#b7791f; --amber-soft:#fbf1de; --red:#b4412f; --red-soft:#f9e5e1;
+  --blue:#2f5fa7; --blue-soft:#e4ecf8; --grey-soft:#eeece6;
+  --r:16px; --shadow:0 1px 2px rgba(20,30,25,.05),0 4px 14px rgba(20,30,25,.06);
+  --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:15px;line-height:1.4}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+.app{max-width:560px;margin:0 auto;min-height:100vh;padding-bottom:calc(84px + var(--sb))}
+header.top{position:sticky;top:0;z-index:5;background:var(--pri);color:#fff;padding:calc(14px + var(--st)) 18px 16px;display:flex;align-items:center;gap:12px}
+header.top .t{flex:1;min-width:0}
+header.top h1{margin:0;font-size:19px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header.top .sub{font-size:12.5px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#fff}
+.iconbtn svg{width:20px;height:20px}
+main{padding:16px}
+.banner{margin:12px 16px 0;padding:10px 12px;border-radius:12px;background:var(--amber-soft);color:#7a5212;font-size:13px}
+.banner:empty{display:none}
+h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 4px 10px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+h2.sec a,h2.sec button{color:var(--pri);text-transform:none;letter-spacing:0;font-size:13px;font-weight:600}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat .n{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.stat .l{font-size:12px;color:var(--muted);font-weight:500}
+.hero{background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.hero .l{font-size:12.5px;opacity:.85}
+.hero .big{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:2px 0}
+.bar{height:8px;border-radius:8px;background:rgba(255,255,255,.22);overflow:hidden;margin:12px 0 8px}
+.bar i{display:block;height:100%;background:#fff;border-radius:8px}
+.hero .row{display:flex;justify-content:space-between;font-size:12.5px;opacity:.92}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;display:flex;align-items:center;gap:12px;width:100%;text-align:left}
+.item .av{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--pri-soft);color:var(--pri);flex:none}
+.item .mid{flex:1;min-width:0}
+.item .t1{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .t2{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .end{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.b-green{background:var(--pri-soft);color:var(--pri)}
+.b-amber{background:var(--amber-soft);color:var(--amber)}
+.b-red{background:var(--red-soft);color:var(--red)}
+.b-blue{background:var(--blue-soft);color:var(--blue)}
+.b-grey{background:var(--grey-soft);color:var(--muted)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.search{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);margin-bottom:10px;outline:none}
+.search:focus{border-color:var(--pri)}
+.empty{text-align:center;color:var(--muted);padding:32px 16px;font-size:14px}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:12px;font-weight:700;background:var(--pri);color:#fff;font-size:14px}
+.btn.sec{background:var(--pri-soft);color:var(--pri)}
+.btn.ghost{background:var(--grey-soft);color:var(--ink)}
+.btn.danger{background:var(--red-soft);color:var(--red)}
+.btn.sm{padding:7px 12px;font-size:12.5px;border-radius:10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5}
+.fab{position:fixed;right:max(18px,calc(50% - 262px));bottom:calc(84px + var(--sb));width:56px;height:56px;border-radius:18px;background:var(--pri);color:#fff;display:grid;place-items:center;box-shadow:0 6px 18px rgba(15,92,77,.35);z-index:6}
+.fab svg{width:26px;height:26px}
+.fab[hidden],[hidden]{display:none!important}
+nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:7;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:var(--sb)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs button{padding:10px 0 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--muted)}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button.on{color:var(--pri)}
+.monthbar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:6px}
+.monthbar .m{font-weight:800;font-size:16px}
+.monthbar button{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--grey-soft)}
+.act{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:14px;display:flex;gap:12px;width:100%;text-align:left}
+.act .date{width:50px;flex:none;text-align:center;border-radius:12px;background:var(--blue-soft);color:var(--blue);padding:6px 0}
+.act .date .d{font-size:20px;font-weight:800;line-height:1}
+.act .date .mo{font-size:11px;font-weight:700;text-transform:uppercase}
+.act .mid{flex:1;min-width:0}
+.act .t1{font-weight:700}
+.act .t2{font-size:12.5px;color:var(--muted);margin-top:2px}
+.act .desc{font-size:13px;margin-top:6px;color:#3b4440;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(15,20,18,.45);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-width:560px;margin:0 auto;background:var(--bg);border-radius:22px 22px 0 0;max-height:92vh;overflow-y:auto;transform:translateY(105%);transition:transform .25s ease;padding:8px 16px calc(20px + var(--sb))}
+.sheet.on{transform:none}
+.sheet .grab{width:40px;height:5px;border-radius:5px;background:#d3cdbf;margin:4px auto 10px}
+.sheet h3{margin:4px 0 14px;font-size:19px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.f{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.f label{font-size:12.5px;font-weight:700;color:var(--muted)}
+.f input,.f select,.f textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;outline:none}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--pri)}
+.f textarea{min-height:80px;resize:vertical}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--grey-soft);border-radius:12px;padding:3px;gap:3px}
+.seg button{padding:9px 6px;border-radius:9px;font-size:13px;font-weight:700;color:var(--muted)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px}
+.kv dt{color:var(--muted);font-weight:500}
+.kv dd{margin:0;font-weight:600;text-align:right;word-break:break-word}
+.kv a{color:var(--pri)}
+.months{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.months div{text-align:center;padding:7px 0;border-radius:10px;font-size:11px;font-weight:700}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.actions .btn{flex:1}
+.toast{position:fixed;left:50%;bottom:calc(150px + var(--sb));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:13.5px;font-weight:600;opacity:0;transition:.2s;z-index:40;pointer-events:none;max-width:88vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.loading{padding:40px;text-align:center;color:var(--muted)}
+.pill-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mt{margin-top:12px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="t"><h1 id="hName">Society Manager</h1><div class="sub" id="hSub">Loading…</div></div>
+    <button class="iconbtn" data-a="settings" id="gear" aria-label="Society settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+  </header>
+  <div class="banner" id="banner"></div>
+  <main id="main"><div class="loading">Loading society data…</div></main>
+</div>
+<button class="fab" id="fab" hidden aria-label="Add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+<nav class="tabs"><div class="in">
+  <button data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+  <button data-tab="flats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>Flats</button>
+  <button data-tab="dues"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10M7 8h10M7 4c4 0 6 2 6 4s-2 4-6 4l7 8"/></svg>Maintenance</button>
+  <button data-tab="activities"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Activities</button>
+</div></nav>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="sheetBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import CFG from "./firebase-config.js";
+(function(){
+"use strict";
+/* ---------- state ---------- */
+const DEF_SETTINGS={name:"",address:"",amount:0,dueDay:10,upi:""};
+const S={settings:{...DEF_SETTINGS},flats:[],dues:{},acts:[]};
+const got={settings:false,flats:false,dues:false,acts:false};
+let db=null, mode="connecting"; // connecting | signin | db | local
+let canWrite=null; // true | false | null (unknown)
+let tab=(["home","flats","dues","activities"].includes(location.hash.slice(1))?location.hash.slice(1):"home");
+let month=curMonth(), flatFilter="all", flatQ="", duesFilter="pending", actSeg="ongoing";
+const $=s=>document.querySelector(s);
+
+/* ---------- helpers ---------- */
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function pad(n){return String(n).padStart(2,"0")}
+function todayISO(){const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function curMonth(){const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)}
+function shiftMonth(m,k){let [y,mo]=m.split("-").map(Number);mo+=k;while(mo<1){mo+=12;y--}while(mo>12){mo-=12;y++}return y+"-"+pad(mo)}
+function monthLabel(m,short){const [y,mo]=m.split("-").map(Number);return new Date(y,mo-1,1).toLocaleDateString("en-IN",{month:short?"short":"long",year:"numeric"})}
+function fmtDate(iso){if(!iso)return"";const [y,m,d]=iso.split("-").map(Number);if(!y)return iso;return new Date(y,m-1,d).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
+function inr(n){return "₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:0})}
+function num(v){const n=parseFloat(v);return isFinite(n)?n:0}
+function str(v,max){return String(v==null?"":v).trim().slice(0,max||200)}
+function sortFlats(a){return a.slice().sort((x,y)=>String(x.number||"").localeCompare(String(y.number||""),"en",{numeric:true}))}
+function flatAmount(f){return num(f.amount)||num(S.settings.amount)}
+function payRec(m,id){const d=S.dues[m];return d&&d.flats&&d.flats[id]?d.flats[id]:null}
+function applies(f,m){return !f.since||String(f.since)<=m}
+function isPaid(m,id){const r=payRec(m,id);return !!(r&&r.paid)}
+function initials(f){return esc(String(f.number||"?").slice(0,5))}
+function waNum(p){let d=String(p||"").replace(/\D/g,"");if(d.length===10)d="91"+d;return d.length>=11?d:""}
+function editable(){return canWrite!==false}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("on"),2600)}
+function occBadge(f){const o=f.occupancy||"Owner";return o==="Vacant"?'<span class="badge b-grey">Vacant</span>':o==="Tenant"?'<span class="badge b-blue">Tenant</span>':'<span class="badge b-green">Owner</span>'}
+function overdue(m){if(m<curMonth())return true;if(m>curMonth())return false;return new Date().getDate()>num(S.settings.dueDay||10)}
+
+/* ---------- persistence (Firebase) ---------- */
+const DEMO=!CFG||!CFG.apiKey||/PASTE|YOUR/i.test(String(CFG.apiKey));
+let F=null, auth=null, me=null, admins=[], setupDone=true, unsubs=[];
+function myEmail(){return me&&me.email?me.email.toLowerCase():""}
+function writeErr(e){
+  const c=e&&e.code||"";
+  if(c==="permission-denied"){canWrite=false;toast("Only committee members can make changes");}
+  else if(c==="resource-exhausted")toast("Free daily limit reached — try again tomorrow");
+  else toast("Couldn't save: "+(c||"please try again"));
+  render();
+}
+// Firestore queues writes while offline and syncs later, so we don't wait for the server.
+function run(fn){
+  if(mode!=="db"){render();return true}
+  if(canWrite===false){toast("Only committee members can make changes");return false}
+  try{Promise.resolve(fn()).catch(writeErr)}catch(e){writeErr(e)}
+  render();return true;
+}
+function newId(){return (mode==="db"?F.doc(F.collection(db,"x")).id:"x"+Date.now().toString(36)+Math.random().toString(36).slice(2,7))}
+
+async function saveSettings(body){S.settings={...DEF_SETTINGS,...body};return run(()=>F.setDoc(F.doc(db,"config","society"),body))}
+async function saveFlat(id,body){
+  id=id||newId();const i=S.flats.findIndex(f=>f.id===id);
+  const rec={id,...body};if(i>=0)S.flats[i]=rec;else S.flats.push(rec);
+  return run(()=>F.setDoc(F.doc(db,"flats",id),body));
+}
+async function deleteFlat(id){S.flats=S.flats.filter(f=>f.id!==id);return run(()=>F.deleteDoc(F.doc(db,"flats",id)))}
+async function setPayment(m,flatId,rec){
+  const d=S.dues[m]?{...S.dues[m],flats:{...(S.dues[m].flats||{})}}:{month:m,flats:{}};
+  d.flats[flatId]=rec;S.dues[m]=d;
+  return run(()=>F.setDoc(F.doc(db,"dues",m),{month:m,flats:{[flatId]:rec}},{merge:true}));
+}
+async function saveAct(id,body){
+  id=id||newId();const i=S.acts.findIndex(a=>a.id===id);
+  const rec={id,...body};if(i>=0)S.acts[i]=rec;else S.acts.push(rec);
+  return run(()=>F.setDoc(F.doc(db,"activities",id),body));
+}
+async function deleteAct(id){S.acts=S.acts.filter(a=>a.id!==id);return run(()=>F.deleteDoc(F.doc(db,"activities",id)))}
+
+/* ---------- connect ---------- */
+let loadTimer=null;
+function setBanner(t){$("#banner").textContent=t||""}
+function allGot(){return got.settings&&got.flats&&got.dues&&got.acts}
+function onSnap(key){got[key]=true;if(allGot())clearTimeout(loadTimer);render()}
+function onErr(e){
+  clearTimeout(loadTimer);
+  if(e&&e.code==="permission-denied")setBanner("This account can't read the society's data. Check the security rules (README step 5).");
+  else setBanner("Couldn't load some data: "+((e&&e.code)||"unknown error"));
+  Object.keys(got).forEach(k=>got[k]=true);render();
+}
+function stopAll(){unsubs.forEach(u=>{try{u()}catch(e){}});unsubs=[]}
+function subscribe(){
+  Object.keys(got).forEach(k=>got[k]=false);canWrite=null;
+  loadTimer=setTimeout(()=>{if(!allGot()){setBanner(navigator.onLine?"Still loading… your connection may be slow.":"You're offline — showing saved data.");Object.keys(got).forEach(k=>got[k]=true);render()}},10000);
+  const {onSnapshot,doc,collection}=F;
+  unsubs.push(onSnapshot(doc(db,"config","society"),s=>{S.settings=s.exists()?{...DEF_SETTINGS,...s.data()}:{...DEF_SETTINGS};onSnap("settings")},onErr));
+  unsubs.push(onSnapshot(collection(db,"flats"),s=>{S.flats=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("flats")},onErr));
+  unsubs.push(onSnapshot(collection(db,"dues"),s=>{const o={};s.docs.forEach(d=>o[d.id]=d.data());S.dues=o;onSnap("dues")},onErr));
+  unsubs.push(onSnapshot(collection(db,"activities"),s=>{S.acts=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("acts")},onErr));
+  unsubs.push(onSnapshot(collection(db,"admins"),s=>{admins=s.docs.map(d=>d.id).sort();canWrite=admins.includes(myEmail());render()},()=>{}));
+  unsubs.push(onSnapshot(doc(db,"config","setup"),s=>{setupDone=s.exists();render()},()=>{}));
+}
+async function connect(){
+  window.addEventListener("offline",()=>setBanner("You're offline — changes will sync when you reconnect."));
+  window.addEventListener("online",()=>setBanner(""));
+  if(DEMO){goLocal();return}
+  try{
+    const V="https://www.gstatic.com/firebasejs/10.12.2/";
+    const [appM,fsM,auM]=await Promise.all([import(V+"firebase-app.js"),import(V+"firebase-firestore.js"),import(V+"firebase-auth.js")]);
+    F={...fsM,...auM};
+    const app=appM.initializeApp(CFG);
+    try{db=fsM.initializeFirestore(app,{localCache:fsM.persistentLocalCache({tabManager:fsM.persistentMultipleTabManager()})})}
+    catch(e){db=fsM.getFirestore(app)}
+    auth=auM.getAuth(app);
+    auM.getRedirectResult(auth).catch(e=>toast("Sign-in failed: "+(e.code||e.message)));
+    auM.onAuthStateChanged(auth,u=>{
+      stopAll();me=u;
+      if(!u){mode="signin";canWrite=false;S.flats=[];S.dues={};S.acts=[];S.settings={...DEF_SETTINGS};render();return}
+      mode="db";subscribe();render();
+    });
+  }catch(e){setBanner("Couldn't load Firebase. Check your internet connection and reopen the app.");mode="signin";render()}
+}
+function goLocal(){mode="local";canWrite=true;Object.keys(got).forEach(k=>got[k]=true);setBanner("Demo mode — nothing is saved. Add your Firebase settings to firebase-config.js (see README).");render()}
+async function signIn(){
+  const p=new F.GoogleAuthProvider();p.setCustomParameters({prompt:"select_account"});
+  try{
+    await F.signInWithPopup(auth,p);
+  }catch(e){
+    const c=e&&e.code||"";
+    if(/popup-blocked|operation-not-supported|cancelled-popup/.test(c)){try{await F.signInWithRedirect(auth,p)}catch(e2){toast("Sign-in failed: "+(e2.code||""))}}
+    else if(!/popup-closed-by-user/.test(c))toast("Sign-in failed: "+c);
+  }
+}
+async function claimAdmin(){
+  const em=myEmail();if(!em)return;
+  try{
+    const b=F.writeBatch(db);
+    b.set(F.doc(db,"admins",em),{email:em,addedBy:em,at:new Date().toISOString()});
+    b.set(F.doc(db,"config","setup"),{firstAdmin:em,at:new Date().toISOString()});
+    await b.commit();toast("You're now the society admin");
+  }catch(e){toast(e&&e.code==="permission-denied"?"Someone has already set up this society":"Couldn't complete setup: "+(e&&e.code||""))}
+}
+function addAdmin(email){
+  email=String(email||"").trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast("Enter a valid email");return}
+  if(admins.includes(email)){toast("Already a committee member");return}
+  run(()=>F.setDoc(F.doc(db,"admins",email),{email,addedBy:myEmail(),at:new Date().toISOString()}));
+  toast("Added "+email);
+}
+function removeAdmin(email){run(()=>F.deleteDoc(F.doc(db,"admins",email)));toast("Removed "+email)}
+
+/* ---------- render ---------- */
+function render(){
+  const st=S.settings;
+  $("#hName").textContent=st.name||"Society Manager";
+  $("#hSub").textContent=st.address||(S.flats.length?S.flats.length+" flats":"Set up your society");
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const fab=$("#fab");fab.hidden=!(editable()&&(tab==="flats"||tab==="activities"));
+  $("#gear").hidden=mode==="signin";
+  if(mode==="signin"){$("#main").innerHTML=vSignin();$("#hSub").textContent="Sign in to continue";return}
+  if(mode==="connecting"||(!allGot()&&mode!=="local")){$("#main").innerHTML='<div class="loading">Loading society data…</div>';return}
+  const m=$("#main");
+  m.innerHTML=tab==="home"?vHome():tab==="flats"?vFlats():tab==="dues"?vDues():vActs();
+  if(tab==="flats"){const s=$("#flatQ");if(s&&render._focusQ){s.focus();s.setSelectionRange(s.value.length,s.value.length)}}
+}
+function dueStats(m){
+  let total=0,coll=0,paidN=0,pendN=0;
+  S.flats.filter(f=>applies(f,m)).forEach(f=>{const a=flatAmount(f);total+=a;const r=payRec(m,f.id);if(r&&r.paid){coll+=num(r.amount)||a;paidN++}else pendN++});
+  return {total,coll,paidN,pendN};
+}
+function actBucket(a){
+  const t=todayISO();
+  if(a.status==="Completed"||a.status==="Cancelled")return"past";
+  if(a.status==="Ongoing")return"ongoing";
+  const end=a.endDate||a.date;
+  if(a.date&&a.date<=t&&end>=t)return"ongoing";
+  if(end&&end<t)return"past";
+  return"upcoming";
+}
+function vSignin(){
+  return `<div class="card" style="text-align:center;padding:30px 20px;margin-top:20px">
+    <div style="font-size:44px">🏢</div>
+    <h3 style="margin:8px 0 6px;font-size:20px">Society Manager</h3>
+    <p class="muted small" style="margin:0 0 18px">Sign in with your Google account to see flats, maintenance and society activities.</p>
+    <button class="btn block" data-a="signin">Sign in with Google</button>
+    <p class="muted small" style="margin:14px 0 0">Residents can view everything. Only committee members can make changes.</p>
+  </div>`;
+}
+function claimCard(){
+  if(mode!=="db"||setupDone)return "";
+  return `<div class="card" style="border:2px solid var(--pri);margin-bottom:14px">
+    <b>First-time setup</b><p class="small muted" style="margin:4px 0 12px">No one manages this society yet. If you're setting it up, make yourself the admin. Only the first person can do this, and after that only admins can add committee members.</p>
+    <button class="btn block" data-a="claim">Make me the admin (${esc(myEmail())})</button></div>`;
+}
+function vHome(){
+  if(!S.flats.length){
+    const done=!!S.settings.name;
+    return claimCard()+`<div class="card" style="text-align:center;padding:26px 18px">
+      <div style="font-size:40px">🏢</div>
+      <h3 style="margin:8px 0 6px;font-size:19px">Welcome to Society Manager</h3>
+      <p class="muted small" style="margin:0 0 16px">Track flats and residents, monthly maintenance and society activities in one place.</p>
+      ${editable()?`<div class="list"><button class="btn ${done?"ghost":""} block" data-a="settings">${done?"✓ Society details added":"1 · Add society details"}</button>
+      <button class="btn ${done?"":"sec"} block" data-a="bulk">2 · Add flats (bulk)</button>
+      <button class="btn ghost block" data-go="flats">or add flats one by one</button></div>`:`<p class="muted small">The committee hasn't added any details yet.</p>`}
+    </div>`;
+  }
+  const cm=curMonth(), ds=dueStats(cm);
+  const pct=ds.total?Math.round(ds.coll/ds.total*100):0;
+  const occ=S.flats.filter(f=>(f.occupancy||"Owner")==="Owner").length;
+  const ten=S.flats.filter(f=>f.occupancy==="Tenant").length;
+  const vac=S.flats.filter(f=>f.occupancy==="Vacant").length;
+  const res=S.flats.reduce((s,f)=>s+num(f.members),0);
+  const ongoing=S.acts.filter(a=>actBucket(a)==="ongoing").sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  const upcoming=S.acts.filter(a=>actBucket(a)==="upcoming").sort((a,b)=>String(a.date||"9").localeCompare(String(b.date||"9"))).slice(0,3);
+  return claimCard()+`
+  <button class="hero" style="display:block;width:100%;text-align:left" data-go="dues">
+    <div class="l">Maintenance · ${esc(monthLabel(cm))}</div>
+    <div class="big">${inr(ds.coll)} <span style="font-size:15px;font-weight:600;opacity:.8">of ${inr(ds.total)}</span></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="row"><span>${ds.paidN} paid · ${ds.pendN} pending</span><span>${pct}% collected</span></div>
+  </button>
+  <h2 class="sec">Flats & residents</h2>
+  <div class="grid2">
+    <button class="card stat" style="text-align:left" data-go="flats" data-ff="all"><div class="n">${S.flats.length}</div><div class="l">Total flats</div></button>
+    <div class="card stat"><div class="n">${res||"—"}</div><div class="l">Residents</div></div>
+  </div>
+  <div class="grid3 mt">
+    <button class="card stat" style="text-align:left" data-go="flats" data-ff="Owner"><div class="n" style="color:var(--pri)">${occ}</div><div class="l">Owner-occupied</div></button>
+    <button class="card stat" style="text-align:left" data-go="flats" data-ff="Tenant"><div class="n" style="color:var(--blue)">${ten}</div><div class="l">Rented</div></button>
+    <button class="card stat" style="text-align:left" data-go="flats" data-ff="Vacant"><div class="n" style="color:var(--muted)">${vac}</div><div class="l">Vacant</div></button>
+  </div>
+  <h2 class="sec">Ongoing now <button data-go="activities" data-seg="ongoing">See all</button></h2>
+  ${ongoing.length?`<div class="list">${ongoing.slice(0,3).map(actCard).join("")}</div>`:`<div class="card muted small">Nothing in progress right now.</div>`}
+  <h2 class="sec">Coming up <button data-go="activities" data-seg="upcoming">See all</button></h2>
+  ${upcoming.length?`<div class="list">${upcoming.map(actCard).join("")}</div>`:`<div class="card muted small">No upcoming activities${editable()?' — <button style="color:var(--pri);font-weight:700" data-a="addAct">add one</button>':""}.</div>`}
+  `;
+}
+function vFlats(){
+  const cm=curMonth();
+  const counts={all:S.flats.length,Owner:0,Tenant:0,Vacant:0,pending:0};
+  S.flats.forEach(f=>{counts[f.occupancy||"Owner"]++;if(applies(f,cm)&&!isPaid(cm,f.id))counts.pending++});
+  const q=flatQ.toLowerCase();
+  let list=sortFlats(S.flats).filter(f=>{
+    if(flatFilter==="pending"&&(isPaid(cm,f.id)||!applies(f,cm)))return false;
+    if(["Owner","Tenant","Vacant"].includes(flatFilter)&&(f.occupancy||"Owner")!==flatFilter)return false;
+    if(q){const h=[f.number,f.owner,f.tenant,f.phone,f.tenantPhone,f.vehicle,f.parking].join(" ").toLowerCase();if(!h.includes(q))return false}
+    return true;
+  });
+  const chip=(k,l)=>`<button class="chip ${flatFilter===k?"on":""}" data-ff="${k}">${l} · ${counts[k]}</button>`;
+  return `
+  <input class="search" id="flatQ" type="search" placeholder="Search flat, name, phone, vehicle…" value="${esc(flatQ)}">
+  <div class="chips">${chip("all","All")}${chip("Owner","Owner")}${chip("Tenant","Tenant")}${chip("Vacant","Vacant")}${chip("pending","Dues pending")}</div>
+  ${editable()&&S.flats.length?`<div style="text-align:right;margin:4px 0 8px"><button class="btn sm sec" data-a="bulk">+ Bulk add flats</button></div>`:""}
+  <div class="list mt">${list.length?list.map(f=>{
+    const paid=isPaid(cm,f.id);
+    const who=f.occupancy==="Tenant"?(f.tenant||f.owner):f.owner;
+    return `<button class="item" data-flat="${esc(f.id)}">
+      <div class="av">${initials(f)}</div>
+      <div class="mid"><div class="t1">${who?esc(who):'<span class="muted" style="font-weight:500">Name not added</span>'}</div>
+      <div class="t2">${f.occupancy==="Tenant"&&f.owner?"Owner: "+esc(f.owner)+" · ":""}${esc(f.type||"")}${f.members?" · "+esc(f.members)+" members":""}</div></div>
+      <div class="end">${occBadge(f)}${paid?'<span class="badge b-green">Paid</span>':`<span class="badge ${overdue(cm)?"b-red":"b-amber"}">Due ${inr(flatAmount(f))}</span>`}</div>
+    </button>`}).join(""):`<div class="empty"><b>${S.flats.length?"No matching flats":"No flats yet"}</b>${S.flats.length?"Try a different search or filter.":editable()?'Tap <b style="display:inline">+</b> to add a flat, or use bulk add.':"The committee hasn't added flats yet."}</div>`}</div>`;
+}
+function vDues(){
+  const ds=dueStats(month);
+  const pct=ds.total?Math.round(ds.coll/ds.total*100):0;
+  let list=sortFlats(S.flats).filter(f=>applies(f,month)).filter(f=>duesFilter==="all"?true:duesFilter==="paid"?isPaid(month,f.id):!isPaid(month,f.id));
+  const od=overdue(month);
+  return `
+  <div class="monthbar"><button data-a="mPrev" aria-label="Previous month">‹</button><div class="m">${esc(monthLabel(month))}</div><button data-a="mNext" aria-label="Next month">›</button></div>
+  <div class="grid3 mt">
+    <div class="card stat"><div class="n" style="font-size:19px;color:var(--pri)">${inr(ds.coll)}</div><div class="l">Collected</div></div>
+    <div class="card stat"><div class="n" style="font-size:19px;color:${od?"var(--red)":"var(--amber)"}">${inr(Math.max(ds.total-ds.coll,0))}</div><div class="l">Pending</div></div>
+    <div class="card stat"><div class="n" style="font-size:19px">${pct}%</div><div class="l">${ds.paidN}/${ds.paidN+ds.pendN} flats</div></div>
+  </div>
+  <div class="pill-row mt">
+    <div class="seg" style="flex:1">${["pending","paid","all"].map(k=>`<button class="${duesFilter===k?"on":""}" data-df="${k}">${k==="pending"?"Pending · "+ds.pendN:k==="paid"?"Paid · "+ds.paidN:"All"}</button>`).join("")}</div>
+  </div>
+  ${ds.pendN?`<button class="btn ghost block mt" data-a="copyRem">📋 Copy pending list for WhatsApp group</button>`:""}
+  <p class="small muted" style="margin:10px 4px 0">Due by ${esc(S.settings.dueDay||10)} ${esc(monthLabel(month,true))}${od&&ds.pendN?' · <b style="color:var(--red)">overdue</b>':""}</p>
+  <div class="list mt">${list.length?list.map(f=>{
+    const r=payRec(month,f.id), paid=r&&r.paid;
+    const who=f.occupancy==="Tenant"?(f.tenant||f.owner):f.owner;
+    return `<div class="item">
+      <button class="av" data-flat="${esc(f.id)}">${initials(f)}</button>
+      <button class="mid" style="text-align:left" data-flat="${esc(f.id)}"><div class="t1">${who?esc(who):'<span class="muted" style="font-weight:500">Flat '+esc(f.number)+'</span>'}</div>
+        <div class="t2">${paid?`${inr(r.amount||flatAmount(f))} · ${esc(r.mode||"")} · ${esc(fmtDate(r.date))}`:`${inr(flatAmount(f))} due`}</div></button>
+      <div class="end">${paid?`<button class="badge b-green" data-pay="${esc(f.id)}">✓ Paid</button>`:editable()?`<button class="btn sm" data-pay="${esc(f.id)}">Mark paid</button>`:`<span class="badge ${od?"b-red":"b-amber"}">Pending</span>`}</div>
+    </div>`}).join(""):`<div class="empty"><b>${!S.flats.length?"No flats yet":duesFilter==="pending"?"All dues cleared 🎉":"No payments recorded"}</b>${!S.flats.length?"Add flats first from the Flats tab.":""}</div>`}</div>`;
+}
+const CAT_ICON={"Meeting":"🗣️","Event":"🎉","Festival":"🪔","Maintenance work":"🛠️","Notice":"📢","Other":"📌"};
+function actCard(a){
+  let d="",mo="";if(a.date){const [y,m,dd]=a.date.split("-").map(Number);d=dd;mo=new Date(y,m-1,dd).toLocaleDateString("en-IN",{month:"short"})}
+  const b=actBucket(a);
+  const badge=a.status==="Cancelled"?'<span class="badge b-red">Cancelled</span>':b==="ongoing"?'<span class="badge b-amber">Ongoing</span>':b==="past"?'<span class="badge b-grey">Done</span>':'<span class="badge b-blue">Upcoming</span>';
+  return `<button class="act" data-act="${esc(a.id)}">
+    <div class="date"><div class="d">${d||"–"}</div><div class="mo">${esc(mo)}</div></div>
+    <div class="mid"><div class="pill-row"><div class="t1">${CAT_ICON[a.category]||"📌"} ${esc(a.title)}</div>${badge}</div>
+    <div class="t2">${[a.time,a.venue,a.endDate&&a.endDate!==a.date?"till "+fmtDate(a.endDate):""].filter(Boolean).map(esc).join(" · ")}</div>
+    ${a.desc?`<div class="desc">${esc(a.desc)}</div>`:""}</div></button>`;
+}
+function vActs(){
+  const groups={ongoing:[],upcoming:[],past:[]};
+  S.acts.forEach(a=>groups[actBucket(a)].push(a));
+  groups.ongoing.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  groups.upcoming.sort((a,b)=>String(a.date||"9").localeCompare(String(b.date||"9")));
+  groups.past.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const L=groups[actSeg];
+  return `<div class="seg">${["ongoing","upcoming","past"].map(k=>`<button class="${actSeg===k?"on":""}" data-seg="${k}">${k[0].toUpperCase()+k.slice(1)} · ${groups[k].length}</button>`).join("")}</div>
+  <div class="list mt">${L.length?L.map(actCard).join(""):`<div class="empty"><b>Nothing ${actSeg==="past"?"in the past yet":actSeg==="ongoing"?"ongoing":"planned"}</b>${editable()&&actSeg!=="past"?"Tap + to add a meeting, event, notice or maintenance work.":""}</div>`}</div>`;
+}
+
+/* ---------- sheets ---------- */
+function openSheet(html){$("#sheetBody").innerHTML=html;$("#sheet").classList.add("on");$("#scrim").classList.add("on");$("#sheet").scrollTop=0}
+function closeSheet(){$("#sheet").classList.remove("on");$("#scrim").classList.remove("on")}
+function closeBtn(){return `<button class="btn sm ghost" data-a="close">Close</button>`}
+
+function sheetSettings(){
+  const s=S.settings, ro=!editable();
+  openSheet(`<h3>Society details ${closeBtn()}</h3>
+  <form id="fSettings">
+    <div class="f"><label>Society name</label><input name="name" required maxlength="80" value="${esc(s.name)}" ${ro?"disabled":""} placeholder="e.g. Green Valley CHS"></div>
+    <div class="f"><label>Address / area</label><input name="address" maxlength="120" value="${esc(s.address)}" ${ro?"disabled":""} placeholder="e.g. Baner, Pune"></div>
+    <div class="frow">
+      <div class="f"><label>Default maintenance (₹/month)</label><input name="amount" type="number" min="0" inputmode="numeric" value="${esc(s.amount||"")}" ${ro?"disabled":""}></div>
+      <div class="f"><label>Due by (day of month)</label><input name="dueDay" type="number" min="1" max="28" inputmode="numeric" value="${esc(s.dueDay||10)}" ${ro?"disabled":""}></div>
+    </div>
+    <div class="f"><label>Society UPI ID (shown in reminders)</label><input name="upi" maxlength="80" value="${esc(s.upi)}" ${ro?"disabled":""} placeholder="e.g. greenvalley@okhdfc"></div>
+    ${ro?'<p class="small muted">Only committee members can change these details.</p>':'<button class="btn block" type="submit">Save</button>'}
+  </form>
+  ${mode==="db"?`<h2 class="sec">Committee (can edit)</h2>
+  <div class="card"><div class="list">${admins.length?admins.map(a=>`<div class="pill-row"><span style="word-break:break-all">${esc(a)}${a===myEmail()?' <span class="badge b-green">You</span>':""}</span>${canWrite&&a!==myEmail()?`<button class="btn sm danger" data-a="rmAdmin" data-id="${esc(a)}">Remove</button>`:""}</div>`).join(""):'<span class="muted small">No committee members yet.</span>'}</div>
+  ${canWrite?`<form id="fAdmin" class="mt" style="display:flex;gap:8px"><input name="email" type="email" required placeholder="Gmail address" style="flex:1;padding:10px 12px;border-radius:12px;border:1px solid var(--line)"><button class="btn sm" type="submit">Add</button></form><p class="small muted" style="margin:8px 0 0">They must sign in with this exact Google account.</p>`:""}</div>
+  <h2 class="sec">Account</h2>
+  <div class="card pill-row"><span class="small" style="word-break:break-all">Signed in as <b>${esc(me&&me.email||"")}</b></span><button class="btn sm ghost" data-a="signout">Sign out</button></div>`:""}`);
+}
+function sheetBulk(){
+  openSheet(`<h3>Bulk add flats ${closeBtn()}</h3>
+  <p class="small muted" style="margin-top:-6px">Creates flats like <b>A-101, A-102 … A-504</b>. Run once per wing/building. You can edit each flat afterwards.</p>
+  <form id="fBulk">
+    <div class="frow"><div class="f"><label>Wing / building</label><input name="wing" maxlength="6" placeholder="A (optional)"></div>
+    <div class="f"><label>Flat type</label><select name="type"><option>1 BHK</option><option selected>2 BHK</option><option>3 BHK</option><option>4 BHK</option><option>Shop</option><option>Other</option></select></div></div>
+    <div class="frow"><div class="f"><label>From floor</label><input name="from" type="number" min="0" max="99" value="1" required></div>
+    <div class="f"><label>To floor</label><input name="to" type="number" min="0" max="99" value="5" required></div></div>
+    <div class="frow"><div class="f"><label>Flats per floor</label><input name="per" type="number" min="1" max="20" value="4" required></div>
+    <div class="f"><label>Maintenance (₹, blank = default)</label><input name="amount" type="number" min="0" inputmode="numeric"></div></div>
+    <p class="small muted" id="bulkPrev"></p>
+    <button class="btn block" type="submit">Create flats</button>
+  </form>`);
+  bulkPreview();
+}
+function bulkNumbers(fd){
+  const wing=str(fd.get("wing"),6),from=Math.max(0,Math.floor(num(fd.get("from")))),to=Math.min(99,Math.floor(num(fd.get("to")))),per=Math.min(20,Math.max(1,Math.floor(num(fd.get("per")))));
+  const out=[];for(let fl=from;fl<=to;fl++)for(let n=1;n<=per;n++)out.push((wing?wing+"-":"")+(fl===0?"G"+pad(n):fl+pad(n)));
+  return out;
+}
+function bulkPreview(){const f=$("#fBulk");if(!f)return;const ns=bulkNumbers(new FormData(f));const ex=new Set(S.flats.map(x=>String(x.number).toLowerCase()));const nw=ns.filter(n=>!ex.has(n.toLowerCase()));
+  $("#bulkPrev").textContent=ns.length?`${nw.length} new flats: ${ns.slice(0,3).join(", ")}${ns.length>3?" … "+ns[ns.length-1]:""}${nw.length<ns.length?` (${ns.length-nw.length} already exist, skipped)`:""}`:"Check the floor range."}
+
+function sheetFlat(id){
+  const f=S.flats.find(x=>x.id===id);if(!f)return;
+  const cm=curMonth();const ms=[];for(let i=5;i>=0;i--)ms.push(shiftMonth(cm,-i));
+  const tel=p=>p?`<a href="tel:${esc(String(p).replace(/[^\d+]/g,""))}">${esc(p)}</a>`:"—";
+  const wa=waNum(f.occupancy==="Tenant"?(f.tenantPhone||f.phone):f.phone);
+  const pending=ms.filter(m=>applies(f,m)&&!isPaid(m,f.id));
+  openSheet(`<h3><span>Flat ${esc(f.number)} ${occBadge(f)}</span>${closeBtn()}</h3>
+  <div class="card"><dl class="kv">
+    <dt>Owner</dt><dd>${esc(f.owner||"—")}</dd>
+    <dt>Owner phone</dt><dd>${tel(f.phone)}</dd>
+    ${f.occupancy==="Tenant"?`<dt>Tenant</dt><dd>${esc(f.tenant||"—")}</dd><dt>Tenant phone</dt><dd>${tel(f.tenantPhone)}</dd>${f.leaseEnd?`<dt>Agreement till</dt><dd>${esc(fmtDate(f.leaseEnd))}</dd>`:""}`:""}
+    ${f.email?`<dt>Email</dt><dd>${esc(f.email)}</dd>`:""}
+    <dt>Type</dt><dd>${esc(f.type||"—")}${f.area?" · "+esc(f.area)+" sq ft":""}</dd>
+    <dt>Members</dt><dd>${esc(f.members||"—")}</dd>
+    <dt>Vehicle(s)</dt><dd>${esc(f.vehicle||"—")}</dd>
+    <dt>Parking</dt><dd>${esc(f.parking||"—")}</dd>
+    <dt>Maintenance</dt><dd>${inr(flatAmount(f))}/month${f.since?" from "+esc(monthLabel(f.since,true)):""}</dd>
+    ${f.notes?`<dt>Notes</dt><dd style="font-weight:500">${esc(f.notes)}</dd>`:""}
+  </dl></div>
+  <h2 class="sec">Last 6 months</h2>
+  <div class="card"><div class="months">${ms.map(m=>{const p=isPaid(m,f.id),ap=applies(f,m);return `<div class="${p?"b-green":!ap?"b-grey":overdue(m)?"b-red":"b-amber"}">${esc(monthLabel(m,true).split(" ")[0].slice(0,3))}<br>${p?"✓":!ap?"–":"Due"}</div>`}).join("")}</div>
+  ${pending.length?`<p class="small" style="margin:10px 0 0">Pending: <b>${pending.length} month(s) · ${inr(pending.length*flatAmount(f))}</b></p>`:`<p class="small muted" style="margin:10px 0 0">All clear for the last 6 months.</p>`}</div>
+  <div class="actions">
+    ${wa&&pending.length?`<a class="btn sec" href="https://wa.me/${wa}?text=${encodeURIComponent(remText(f,pending))}" target="_blank" rel="noopener">WhatsApp reminder</a>`:""}
+    ${editable()?`<button class="btn" data-a="editFlat" data-id="${esc(f.id)}">Edit details</button>`:""}
+  </div>`);
+}
+function remText(f,months){
+  const who=f.occupancy==="Tenant"?(f.tenant||f.owner):f.owner;const amt=months.length*flatAmount(f);
+  return `Dear ${who||"Resident"}, this is a gentle reminder that society maintenance of ${inr(amt)} for flat ${f.number} (${months.map(m=>monthLabel(m,true)).join(", ")}) is pending.${S.settings.upi?" UPI: "+S.settings.upi+".":""} Kindly pay at the earliest. – ${S.settings.name||"Society Committee"}`;
+}
+function sheetFlatForm(id){
+  const f=id?S.flats.find(x=>x.id===id)||{}:{occupancy:"Owner",type:"2 BHK"};
+  const o=(v,cur)=>`<option ${v===cur?"selected":""}>${v}</option>`;
+  openSheet(`<h3>${id?"Edit flat "+esc(f.number):"Add flat"} ${closeBtn()}</h3>
+  <form id="fFlat" data-id="${esc(id||"")}">
+    <div class="frow"><div class="f"><label>Flat number *</label><input name="number" required maxlength="12" value="${esc(f.number)}" placeholder="A-101"></div>
+    <div class="f"><label>Type</label><select name="type">${["1 BHK","2 BHK","3 BHK","4 BHK","Shop","Other"].map(v=>o(v,f.type)).join("")}</select></div></div>
+    <div class="f"><label>Status</label><div class="seg" id="occSeg">${["Owner","Tenant","Vacant"].map(v=>`<button type="button" class="${(f.occupancy||"Owner")===v?"on":""}" data-occ="${v}">${v==="Owner"?"Owner-occupied":v==="Tenant"?"Rented":"Vacant"}</button>`).join("")}</div><input type="hidden" name="occupancy" value="${esc(f.occupancy||"Owner")}"></div>
+    <div class="frow"><div class="f"><label>Owner name</label><input name="owner" maxlength="60" value="${esc(f.owner)}"></div>
+    <div class="f"><label>Owner phone</label><input name="phone" type="tel" maxlength="16" value="${esc(f.phone)}"></div></div>
+    <div id="tenantBox" ${f.occupancy==="Tenant"?"":"hidden"}>
+      <div class="frow"><div class="f"><label>Tenant name</label><input name="tenant" maxlength="60" value="${esc(f.tenant)}"></div>
+      <div class="f"><label>Tenant phone</label><input name="tenantPhone" type="tel" maxlength="16" value="${esc(f.tenantPhone)}"></div></div>
+      <div class="f"><label>Rent agreement valid till</label><input name="leaseEnd" type="date" value="${esc(f.leaseEnd)}"></div>
+    </div>
+    <div class="f"><label>Email</label><input name="email" type="email" maxlength="80" value="${esc(f.email)}"></div>
+    <div class="frow"><div class="f"><label>Family members</label><input name="members" type="number" min="0" max="30" value="${esc(f.members)}"></div>
+    <div class="f"><label>Area (sq ft)</label><input name="area" type="number" min="0" value="${esc(f.area)}"></div></div>
+    <div class="frow"><div class="f"><label>Vehicle no(s).</label><input name="vehicle" maxlength="60" value="${esc(f.vehicle)}" placeholder="MH12 AB 1234"></div>
+    <div class="f"><label>Parking slot</label><input name="parking" maxlength="20" value="${esc(f.parking)}"></div></div>
+    <div class="f"><label>Monthly maintenance (₹) — blank uses default ${inr(S.settings.amount)}</label><input name="amount" type="number" min="0" inputmode="numeric" value="${esc(f.amount)}"></div>
+    <div class="f"><label>Maintenance applies from (month)</label><input name="since" type="month" value="${esc(f.since||(id?"":curMonth()))}"></div>
+    <div class="f"><label>Notes</label><textarea name="notes" maxlength="500">${esc(f.notes)}</textarea></div>
+    <button class="btn block" type="submit">${id?"Save changes":"Add flat"}</button>
+    ${id?`<button class="btn danger block mt" type="button" data-a="delFlat" data-id="${esc(id)}">Delete flat</button>`:""}
+  </form>`);
+}
+function sheetPay(flatId){
+  const f=S.flats.find(x=>x.id===flatId);if(!f)return;const r=payRec(month,flatId)||{};
+  const ro=!editable();
+  openSheet(`<h3>Flat ${esc(f.number)} · ${esc(monthLabel(month,true))} ${closeBtn()}</h3>
+  <form id="fPay" data-id="${esc(flatId)}">
+    <div class="frow"><div class="f"><label>Amount (₹)</label><input name="amount" type="number" min="0" required inputmode="numeric" value="${esc(r.amount||flatAmount(f))}" ${ro?"disabled":""}></div>
+    <div class="f"><label>Paid on</label><input name="date" type="date" required value="${esc(r.date||todayISO())}" ${ro?"disabled":""}></div></div>
+    <div class="f"><label>Mode</label><select name="mode" ${ro?"disabled":""}>${["UPI","Cash","Cheque","Bank transfer"].map(v=>`<option ${v===(r.mode||"UPI")?"selected":""}>${v}</option>`).join("")}</select></div>
+    <div class="f"><label>Reference / receipt no.</label><input name="ref" maxlength="40" value="${esc(r.ref)}" ${ro?"disabled":""} placeholder="UTR, cheque no. or receipt no."></div>
+    ${ro?"":`<button class="btn block" type="submit">${r.paid?"Update payment":"Mark as paid"}</button>
+    ${r.paid?`<button class="btn danger block mt" type="button" data-a="unpay" data-id="${esc(flatId)}">Mark as unpaid</button>`:""}`}
+  </form>`);
+}
+function sheetAct(id){
+  const a=S.acts.find(x=>x.id===id);if(!a)return;
+  openSheet(`<h3><span>${CAT_ICON[a.category]||"📌"} ${esc(a.title)}</span>${closeBtn()}</h3>
+  <div class="card"><dl class="kv">
+    <dt>Type</dt><dd>${esc(a.category||"Other")}</dd>
+    <dt>Date</dt><dd>${esc(fmtDate(a.date)||"—")}${a.endDate&&a.endDate!==a.date?" – "+esc(fmtDate(a.endDate)):""}</dd>
+    ${a.time?`<dt>Time</dt><dd>${esc(a.time)}</dd>`:""}
+    ${a.venue?`<dt>Venue</dt><dd>${esc(a.venue)}</dd>`:""}
+    ${a.owner?`<dt>Coordinator</dt><dd>${esc(a.owner)}</dd>`:""}
+    ${a.cost?`<dt>Budget / cost</dt><dd>${inr(a.cost)}</dd>`:""}
+    <dt>Status</dt><dd>${esc(a.status||"Planned")}</dd>
+  </dl>${a.desc?`<p style="margin:12px 0 0;white-space:pre-wrap">${esc(a.desc)}</p>`:""}</div>
+  <div class="actions"><button class="btn ghost" data-a="copyAct" data-id="${esc(a.id)}">Copy as notice</button>${editable()?`<button class="btn" data-a="editAct" data-id="${esc(a.id)}">Edit</button>`:""}</div>`);
+}
+function sheetActForm(id){
+  const a=id?S.acts.find(x=>x.id===id)||{}:{category:"Meeting",status:"Planned",date:todayISO()};
+  openSheet(`<h3>${id?"Edit activity":"New activity"} ${closeBtn()}</h3>
+  <form id="fAct" data-id="${esc(id||"")}">
+    <div class="f"><label>Title *</label><input name="title" required maxlength="80" value="${esc(a.title)}" placeholder="e.g. Annual general meeting"></div>
+    <div class="frow"><div class="f"><label>Type</label><select name="category">${Object.keys(CAT_ICON).map(v=>`<option ${v===a.category?"selected":""}>${v}</option>`).join("")}</select></div>
+    <div class="f"><label>Status</label><select name="status">${["Planned","Ongoing","Completed","Cancelled"].map(v=>`<option ${v===(a.status||"Planned")?"selected":""}>${v}</option>`).join("")}</select></div></div>
+    <div class="frow"><div class="f"><label>Start date</label><input name="date" type="date" value="${esc(a.date)}"></div>
+    <div class="f"><label>End date (optional)</label><input name="endDate" type="date" value="${esc(a.endDate)}"></div></div>
+    <div class="frow"><div class="f"><label>Time</label><input name="time" maxlength="30" value="${esc(a.time)}" placeholder="7:00 PM"></div>
+    <div class="f"><label>Venue</label><input name="venue" maxlength="60" value="${esc(a.venue)}" placeholder="Clubhouse"></div></div>
+    <div class="frow"><div class="f"><label>Coordinator</label><input name="owner" maxlength="60" value="${esc(a.owner)}"></div>
+    <div class="f"><label>Budget / cost (₹)</label><input name="cost" type="number" min="0" value="${esc(a.cost)}"></div></div>
+    <div class="f"><label>Details</label><textarea name="desc" maxlength="1500" placeholder="Agenda, contribution per flat, contractor details…">${esc(a.desc)}</textarea></div>
+    <p class="small muted" style="margin-top:-4px">“Planned” items move to Ongoing / Past automatically by date.</p>
+    <button class="btn block" type="submit">${id?"Save changes":"Add activity"}</button>
+    ${id?`<button class="btn danger block mt" type="button" data-a="delAct" data-id="${esc(id)}">Delete</button>`:""}
+  </form>`);
+}
+function sheetConfirm(text,btn,act,id){
+  openSheet(`<h3>Are you sure?</h3><p>${esc(text)}</p><div class="actions"><button class="btn ghost" data-a="close">Cancel</button><button class="btn danger" data-a="${act}" data-id="${esc(id)}">${esc(btn)}</button></div>`);
+}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t);toast("Copied — paste it in WhatsApp")}
+  catch(e){openSheet(`<h3>Copy this text ${closeBtn()}</h3><div class="f"><textarea style="min-height:220px" readonly>${esc(t)}</textarea></div><p class="small muted">Long-press the text to select and copy.</p>`)}
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("[data-tab],[data-go],[data-a],[data-ff],[data-df],[data-seg],[data-flat],[data-pay],[data-act],[data-occ]");
+  if(!t)return;
+  if(t.dataset.occ){e.preventDefault();const f=$("#fFlat");f.occupancy.value=t.dataset.occ;document.querySelectorAll("#occSeg button").forEach(b=>b.classList.toggle("on",b===t));$("#tenantBox").hidden=t.dataset.occ!=="Tenant";return}
+  if(t.dataset.tab){tab=t.dataset.tab;history.replaceState(null,"","#"+tab);if(tab==="dues")month=month||curMonth();render();scrollTo(0,0);return}
+  if(t.dataset.go){tab=t.dataset.go;if(t.dataset.ff)flatFilter=t.dataset.ff;if(t.dataset.seg)actSeg=t.dataset.seg;if(tab==="dues")month=curMonth();history.replaceState(null,"","#"+tab);render();scrollTo(0,0);return}
+  if(t.dataset.ff){flatFilter=t.dataset.ff;render();return}
+  if(t.dataset.df){duesFilter=t.dataset.df;render();return}
+  if(t.dataset.seg){actSeg=t.dataset.seg;render();return}
+  if(t.dataset.pay){sheetPay(t.dataset.pay);return}
+  if(t.dataset.flat){sheetFlat(t.dataset.flat);return}
+  if(t.dataset.act&&!t.dataset.a){sheetAct(t.dataset.act);return}
+  const a=t.dataset.a,id=t.dataset.id;
+  switch(a){
+    case"close":closeSheet();break;
+    case"signin":signIn();break;
+    case"signout":closeSheet();F.signOut(auth);break;
+    case"claim":claimAdmin();break;
+    case"rmAdmin":sheetConfirm("Remove "+id+" from the committee? They will only be able to view.","Remove","rmAdminYes",id);break;
+    case"rmAdminYes":closeSheet();removeAdmin(id);break;
+    case"settings":sheetSettings();break;
+    case"bulk":sheetBulk();break;
+    case"addAct":sheetActForm();break;
+    case"editFlat":sheetFlatForm(id);break;
+    case"editAct":sheetActForm(id);break;
+    case"delFlat":sheetConfirm("This removes the flat and its details. Payment records stay in the monthly ledger.","Delete flat","delFlatYes",id);break;
+    case"delFlatYes":closeSheet();await deleteFlat(id);toast("Flat deleted");break;
+    case"delAct":sheetConfirm("Delete this activity?","Delete","delActYes",id);break;
+    case"delActYes":closeSheet();await deleteAct(id);toast("Activity deleted");break;
+    case"unpay":closeSheet();await setPayment(month,id,{paid:false});toast("Marked as unpaid");break;
+    case"mPrev":month=shiftMonth(month,-1);render();break;
+    case"mNext":month=shiftMonth(month,1);render();break;
+    case"copyRem":{
+      const pend=sortFlats(S.flats).filter(f=>applies(f,month)&&!isPaid(month,f.id));
+      const txt=`*${S.settings.name||"Society"} — Maintenance ${monthLabel(month)}*\nPending (due by ${S.settings.dueDay||10} ${monthLabel(month,true)}):\n`+pend.map(f=>`• ${f.number} — ${inr(flatAmount(f))}`).join("\n")+(S.settings.upi?`\n\nPay via UPI: ${S.settings.upi}`:"")+`\nPlease ignore if already paid. Thank you!`;
+      copyText(txt);break;}
+    case"copyAct":{const x=S.acts.find(y=>y.id===id);if(!x)break;
+      const txt=`📢 *${x.title}*\n${x.category?x.category+"\n":""}🗓 ${fmtDate(x.date)}${x.endDate&&x.endDate!==x.date?" – "+fmtDate(x.endDate):""}${x.time?" · "+x.time:""}${x.venue?"\n📍 "+x.venue:""}${x.desc?"\n\n"+x.desc:""}\n\n— ${S.settings.name||"Society Committee"}`;
+      copyText(txt);break;}
+  }
+});
+$("#scrim").addEventListener("click",closeSheet);
+$("#fab").addEventListener("click",()=>{if(tab==="flats")sheetFlatForm();else sheetActForm()});
+document.addEventListener("input",e=>{
+  if(e.target.id==="flatQ"){flatQ=e.target.value;render._focusQ=true;render();render._focusQ=false}
+  if(e.target.closest("#fBulk"))bulkPreview();
+});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(["home","flats","dues","activities"].includes(h)&&h!==tab){tab=h;render()}});
+document.addEventListener("submit",async e=>{
+  e.preventDefault();const f=e.target,fd=new FormData(f);
+  if(f.id==="fAdmin"){addAdmin(fd.get("email"));sheetSettings();return}
+  if(f.id==="fSettings"){
+    const body={name:str(fd.get("name"),80),address:str(fd.get("address"),120),amount:num(fd.get("amount")),dueDay:Math.min(28,Math.max(1,Math.floor(num(fd.get("dueDay"))||10))),upi:str(fd.get("upi"),80)};
+    closeSheet();if(await saveSettings(body))toast("Society details saved");
+  }
+  if(f.id==="fFlat"){
+    const id=f.dataset.id||"";const number=str(fd.get("number"),12);
+    if(S.flats.some(x=>x.id!==id&&String(x.number).toLowerCase()===number.toLowerCase())){toast("Flat "+number+" already exists");return}
+    const body={number,type:str(fd.get("type"),20),occupancy:["Owner","Tenant","Vacant"].includes(fd.get("occupancy"))?fd.get("occupancy"):"Owner",
+      owner:str(fd.get("owner"),60),phone:str(fd.get("phone"),16),tenant:str(fd.get("tenant"),60),tenantPhone:str(fd.get("tenantPhone"),16),leaseEnd:str(fd.get("leaseEnd"),10),
+      email:str(fd.get("email"),80),members:num(fd.get("members"))||"",area:num(fd.get("area"))||"",vehicle:str(fd.get("vehicle"),60),parking:str(fd.get("parking"),20),
+      amount:num(fd.get("amount"))||"",since:/^\d{4}-\d{2}$/.test(fd.get("since")||"")?fd.get("since"):"",notes:str(fd.get("notes"),500)};
+    if(body.occupancy!=="Tenant"){body.tenant="";body.tenantPhone="";body.leaseEnd=""}
+    closeSheet();if(await saveFlat(id,body))toast(id?"Flat updated":"Flat added");
+  }
+  if(f.id==="fBulk"){
+    const ex=new Set(S.flats.map(x=>String(x.number).toLowerCase()));
+    const ns=bulkNumbers(fd).filter(n=>!ex.has(n.toLowerCase()));
+    if(!ns.length){toast("Nothing new to add");return}
+    if(ns.length>400){toast("That's too many at once — add one wing at a time");return}
+    const type=str(fd.get("type"),20),amount=num(fd.get("amount"))||"";
+    closeSheet();toast("Adding "+ns.length+" flats…");
+    let ok=0;for(const n of ns){if(await saveFlat(null,{number:n,type,occupancy:"Owner",amount,owner:"",phone:"",since:curMonth()}))ok++;else break}
+    toast(ok+" flats added");tab="flats";history.replaceState(null,"","#flats");render();
+  }
+  if(f.id==="fPay"){
+    const rec={paid:true,amount:num(fd.get("amount")),date:str(fd.get("date"),10),mode:str(fd.get("mode"),20),ref:str(fd.get("ref"),40)};
+    closeSheet();if(await setPayment(month,f.dataset.id,rec))toast("Payment recorded");
+  }
+  if(f.id==="fAct"){
+    const id=f.dataset.id||"";
+    const body={title:str(fd.get("title"),80),category:str(fd.get("category"),30),status:str(fd.get("status"),20),date:str(fd.get("date"),10),endDate:str(fd.get("endDate"),10),
+      time:str(fd.get("time"),30),venue:str(fd.get("venue"),60),owner:str(fd.get("owner"),60),cost:num(fd.get("cost"))||"",desc:str(fd.get("desc"),1500)};
+    if(body.endDate&&body.date&&body.endDate<body.date)body.endDate=body.date;
+    closeSheet();if(await saveAct(id,body))toast(id?"Activity updated":"Activity added");
+  }
+});
+
+render();
+connect();
+if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+})();
+</script>
+</body>
+</html>
