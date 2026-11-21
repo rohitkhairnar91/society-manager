@@ -57,6 +57,7 @@ service cloud.firestore {
     match /dues/{month}         { allow read: if canRead(); allow write: if canAccounts(); }
     match /activities/{id}      { allow read: if canRead(); allow write: if isCommittee(); }
     match /announcements/{id}   { allow read: if canRead(); allow write: if isCommittee(); }
+    match /meetings/{id}        { allow read: if canRead(); allow write: if canManage(); }
 
     match /complaints/{id} {
       allow create: if canRead()
