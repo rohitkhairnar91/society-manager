@@ -19,6 +19,9 @@ service cloud.firestore {
     function ownsFlat(flatId) { return isResident() && get(memberPath()).data.flatId == flatId && get(memberPath()).data.relation in ['Owner', 'Tenant']; }
     function joinKeys() { return ['email', 'name', 'phone', 'flatId', 'flatNumber', 'relation', 'status', 'requestedAt']; }
 
+    // App admin can read and write everything (needed to restore a backup).
+    match /{document=**} { allow read, write: if isOwner(); }
+
     // Managing committee. Document id = lower-case email. Field role: chairman | secretary | treasurer | member
     match /admins/{email} {
       allow read: if signedIn();
@@ -36,6 +39,7 @@ service cloud.firestore {
     // Flat numbers only (no names/phones) so new users can pick their flat.
     match /config/flatIndex { allow read: if signedIn(); allow write: if canManage(); }
     match /config/society { allow read: if canRead(); allow write: if canManage() || canAccounts(); }
+    match /config/backup { allow read: if isCommittee(); allow write: if canManage(); }
 
     // Residents' join requests. Document id = lower-case email.
     match /members/{email} {
