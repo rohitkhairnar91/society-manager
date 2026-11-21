@@ -6,10 +6,14 @@ service cloud.firestore {
     function myEmail() { return request.auth.token.email.lower(); }
     function adminPath() { return /databases/$(database)/documents/admins/$(myEmail()); }
     function memberPath() { return /databases/$(database)/documents/members/$(myEmail()); }
-    function isCommittee() { return verified() && exists(adminPath()); }
+    function setupPath() { return /databases/$(database)/documents/config/setup; }
+    // The person who set up the app (first admin) is the permanent App admin with full rights.
+    function isOwner() { return verified() && exists(setupPath()) && get(setupPath()).data.firstAdmin == myEmail(); }
+    function isAdminDoc() { return verified() && exists(adminPath()); }
     function role() { return get(adminPath()).data.get('role', 'chairman'); }
-    function canManage() { return isCommittee() && role() in ['chairman', 'secretary']; }
-    function canAccounts() { return isCommittee() && role() in ['chairman', 'treasurer']; }
+    function isCommittee() { return isOwner() || isAdminDoc(); }
+    function canManage() { return isOwner() || (isAdminDoc() && role() in ['chairman', 'secretary']); }
+    function canAccounts() { return isOwner() || (isAdminDoc() && role() in ['chairman', 'treasurer']); }
     function isResident() { return verified() && exists(memberPath()) && get(memberPath()).data.status == 'approved'; }
     function canRead() { return isCommittee() || isResident(); }
     function ownsFlat(flatId) { return isResident() && get(memberPath()).data.flatId == flatId && get(memberPath()).data.relation in ['Owner', 'Tenant']; }
@@ -26,7 +30,7 @@ service cloud.firestore {
     }
     match /config/setup {
       allow read: if signedIn();
-      allow create: if verified() && existsAfter(adminPath());
+      allow create: if verified() && existsAfter(adminPath()) && request.resource.data.firstAdmin == myEmail();
       allow update, delete: if false;
     }
     // Flat numbers only (no names/phones) so new users can pick their flat.
