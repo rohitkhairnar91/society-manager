@@ -2,33 +2,77 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function myEmail() { return request.auth.token.email.lower(); }
     function verified() { return signedIn() && request.auth.token.email != null && request.auth.token.email_verified == true; }
-    function isAdmin() { return verified() && exists(/databases/$(database)/documents/admins/$(myEmail())); }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function adminPath() { return /databases/$(database)/documents/admins/$(myEmail()); }
+    function memberPath() { return /databases/$(database)/documents/members/$(myEmail()); }
+    function isCommittee() { return verified() && exists(adminPath()); }
+    function role() { return get(adminPath()).data.get('role', 'chairman'); }
+    function canManage() { return isCommittee() && role() in ['chairman', 'secretary']; }
+    function canAccounts() { return isCommittee() && role() in ['chairman', 'treasurer']; }
+    function isResident() { return verified() && exists(memberPath()) && get(memberPath()).data.status == 'approved'; }
+    function canRead() { return isCommittee() || isResident(); }
+    function ownsFlat(flatId) { return isResident() && get(memberPath()).data.flatId == flatId && get(memberPath()).data.relation in ['Owner', 'Tenant']; }
+    function joinKeys() { return ['email', 'name', 'phone', 'flatId', 'flatNumber', 'relation', 'status', 'requestedAt']; }
 
-    // Committee members (admins). Document id = lower-case email.
+    // Managing committee. Document id = lower-case email. Field role: chairman | secretary | treasurer | member
     match /admins/{email} {
       allow read: if signedIn();
-      // Normal case: an existing admin adds or removes someone.
-      allow create, update, delete: if isAdmin();
-      // First-time setup only: the very first person claims admin, in the same
-      // write that creates config/setup. Once config/setup exists this is closed.
+      allow create, update, delete: if canManage();
+      // First-time setup only: the first person claims admin together with config/setup.
       allow create: if verified() && email == myEmail()
         && !exists(/databases/$(database)/documents/config/setup)
         && existsAfter(/databases/$(database)/documents/config/setup);
     }
-
     match /config/setup {
       allow read: if signedIn();
-      allow create: if verified()
-        && existsAfter(/databases/$(database)/documents/admins/$(myEmail()));
+      allow create: if verified() && existsAfter(adminPath());
       allow update, delete: if false;
     }
+    // Flat numbers only (no names/phones) so new users can pick their flat.
+    match /config/flatIndex { allow read: if signedIn(); allow write: if canManage(); }
+    match /config/society { allow read: if canRead(); allow write: if canManage() || canAccounts(); }
 
-    // Society data: any signed-in user can read, only committee can write.
-    match /config/society { allow read: if signedIn(); allow write: if isAdmin(); }
-    match /flats/{id}      { allow read: if signedIn(); allow write: if isAdmin(); }
-    match /dues/{month}    { allow read: if signedIn(); allow write: if isAdmin(); }
-    match /activities/{id} { allow read: if signedIn(); allow write: if isAdmin(); }
+    // Residents' join requests. Document id = lower-case email.
+    match /members/{email} {
+      allow get: if verified() && (email == myEmail() || isCommittee());
+      allow list: if isCommittee();
+      allow create, update: if verified() && email == myEmail()
+        && (resource == null || resource.data.status in ['pending', 'rejected'])
+        && request.resource.data.status == 'pending'
+        && request.resource.data.email == myEmail()
+        && request.resource.data.keys().hasOnly(joinKeys())
+        && request.resource.data.relation in ['Owner', 'Tenant', 'Family'];
+      allow update, delete: if canManage();
+      allow delete: if verified() && email == myEmail();
+    }
+
+    match /flats/{id} {
+      allow read: if canRead();
+      allow create, delete: if canManage();
+      allow update: if canManage() || canAccounts()
+        || (ownsFlat(id) && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['owner', 'phone', 'tenant', 'tenantPhone', 'leaseEnd', 'email', 'members', 'vehicle', 'parking', 'notes', 'occupancy']));
+    }
+    match /dues/{month}         { allow read: if canRead(); allow write: if canAccounts(); }
+    match /activities/{id}      { allow read: if canRead(); allow write: if isCommittee(); }
+    match /announcements/{id}   { allow read: if canRead(); allow write: if isCommittee(); }
+
+    match /complaints/{id} {
+      allow create: if canRead()
+        && request.resource.data.status == 'Open'
+        && request.resource.data.keys().hasOnly(['title', 'details', 'category', 'anonymous', 'byEmail', 'byName', 'flat', 'status', 'createdAt', 'updatedAt'])
+        && request.resource.data.title is string && request.resource.data.title.size() <= 120
+        && request.resource.data.details is string && request.resource.data.details.size() <= 2000
+        && ((request.resource.data.anonymous == true
+              && !('byEmail' in request.resource.data) && !('byName' in request.resource.data) && !('flat' in request.resource.data))
+            || (request.resource.data.anonymous == false && request.resource.data.byEmail == myEmail()));
+      // Anonymous complaints can be opened by id (only the author's phone knows it); named ones by their author.
+      allow get: if isCommittee() || (canRead() && (resource.data.anonymous == true || resource.data.byEmail == myEmail()));
+      allow list: if isCommittee() || (canRead() && resource.data.byEmail == myEmail());
+      allow update: if isCommittee()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'reply', 'updatedAt', 'repliedBy']);
+      allow delete: if canManage();
+    }
   }
 }

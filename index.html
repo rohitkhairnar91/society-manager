@@ -126,12 +126,21 @@ nav.tabs button.on{color:var(--pri)}
 .loading{padding:40px;text-align:center;color:var(--muted)}
 .pill-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .mt{margin-top:12px}
+.rt{width:100%;border-collapse:collapse;font-size:13px}
+.rt th,.rt td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.rt th{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:#faf8f3}
+.rt .r{text-align:right}.rt tr[data-stmt]{cursor:pointer}.rt .tot td{font-weight:800;background:#faf8f3}
+.printhead{display:none}
+.iconbtn{position:relative}.dot{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#e5533d;color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+nav.tabs .in{grid-template-columns:repeat(5,1fr)!important}
+@media print{header.top,nav.tabs,.fab,.banner,.noprint,.toast,.sheet,.scrim{display:none!important}.app{padding:0}.printhead{display:block}body{background:#fff}.card{box-shadow:none;border:1px solid #ddd}}
 </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
     <div class="t"><h1 id="hName">Society Manager</h1><div class="sub" id="hSub">Loading…</div></div>
+    <button class="iconbtn" data-go="notices" id="bell" aria-label="Notices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg><span class="dot" id="annBadge" hidden>0</span></button>
     <button class="iconbtn" data-a="settings" id="gear" aria-label="Society settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   </header>
   <div class="banner" id="banner"></div>
@@ -141,8 +150,9 @@ nav.tabs button.on{color:var(--pri)}
 <nav class="tabs"><div class="in">
   <button data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
   <button data-tab="flats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>Flats</button>
-  <button data-tab="dues"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10M7 8h10M7 4c4 0 6 2 6 4s-2 4-6 4l7 8"/></svg>Maintenance</button>
-  <button data-tab="activities"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Activities</button>
+  <button data-tab="dues"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10M7 8h10M7 4c4 0 6 2 6 4s-2 4-6 4l7 8"/></svg>Dues</button>
+  <button data-tab="help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 7v4M12 14h.01"/></svg>Complaints</button>
+  <button data-tab="activities"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Events</button>
 </div></nav>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="sheetBody"></div></div>
@@ -154,11 +164,12 @@ import CFG from "./firebase-config.js";
 "use strict";
 /* ---------- state ---------- */
 const DEF_SETTINGS={name:"",address:"",amount:0,dueDay:10,upi:""};
-const S={settings:{...DEF_SETTINGS},flats:[],dues:{},acts:[]};
+const S={settings:{...DEF_SETTINGS},flats:[],dues:{},acts:[],anns:[]};
 const got={settings:false,flats:false,dues:false,acts:false};
 let db=null, mode="connecting"; // connecting | signin | db | local
 let canWrite=null; // true | false | null (unknown)
-let tab=(["home","flats","dues","activities"].includes(location.hash.slice(1))?location.hash.slice(1):"home");
+const VIEWS=["home","flats","dues","help","activities","notices","reports"];
+let tab=(VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):"home");
 let month=curMonth(), flatFilter="all", flatQ="", duesFilter="pending", actSeg="ongoing";
 const $=s=>document.querySelector(s);
 
@@ -180,18 +191,18 @@ function applies(f,m){return !f.since||String(f.since)<=m}
 function isPaid(m,id){const r=payRec(m,id);return !!(r&&r.paid)}
 function initials(f){return esc(String(f.number||"?").slice(0,5))}
 function waNum(p){let d=String(p||"").replace(/\D/g,"");if(d.length===10)d="91"+d;return d.length>=11?d:""}
-function editable(){return canWrite!==false}
+function editable(){return isCommittee()}
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("on"),2600)}
 function occBadge(f){const o=f.occupancy||"Owner";return o==="Vacant"?'<span class="badge b-grey">Vacant</span>':o==="Tenant"?'<span class="badge b-blue">Tenant</span>':'<span class="badge b-green">Owner</span>'}
 function overdue(m){if(m<curMonth())return true;if(m>curMonth())return false;return new Date().getDate()>num(S.settings.dueDay||10)}
 
 /* ---------- persistence (Firebase) ---------- */
 const DEMO=!CFG||!CFG.apiKey||/PASTE|YOUR/i.test(String(CFG.apiKey));
-let F=null, auth=null, me=null, admins=[], setupDone=true, unsubs=[];
+let F=null, auth=null, me=null, admins=[], adminRoles={}, setupDone=true, unsubs=[];
 function myEmail(){return me&&me.email?me.email.toLowerCase():""}
 function writeErr(e){
   const c=e&&e.code||"";
-  if(c==="permission-denied"){canWrite=false;toast("Only committee members can make changes");}
+  if(c==="permission-denied"){toast("You don't have permission to do that");}
   else if(c==="resource-exhausted")toast("Free daily limit reached — try again tomorrow");
   else toast("Couldn't save: "+(c||"please try again"));
   render();
@@ -199,7 +210,6 @@ function writeErr(e){
 // Firestore queues writes while offline and syncs later, so we don't wait for the server.
 function run(fn){
   if(mode!=="db"){render();return true}
-  if(canWrite===false){toast("Only committee members can make changes");return false}
   try{Promise.resolve(fn()).catch(writeErr)}catch(e){writeErr(e)}
   render();return true;
 }
@@ -235,17 +245,24 @@ function onErr(e){
   else setBanner("Couldn't load some data: "+((e&&e.code)||"unknown error"));
   Object.keys(got).forEach(k=>got[k]=true);render();
 }
-function stopAll(){unsubs.forEach(u=>{try{u()}catch(e){}});unsubs=[]}
+function stopAll(){[...unsubs,...cmpUnsubs,...Object.values(anonUnsubs)].forEach(u=>{try{u()}catch(e){}});unsubs=[];cmpUnsubs=[];anonUnsubs={};cmpScope=null;cmpMain=[];cmpAnon={};S.anns=[]}
 function subscribe(){
-  Object.keys(got).forEach(k=>got[k]=false);canWrite=null;
+  Object.keys(got).forEach(k=>got[k]=false);canWrite=null;myMember=undefined;adminsLoaded=false;dataOn=false;membersOn=false;members=[];
+  const {onSnapshot,doc,collection}=F;
+  unsubs.push(onSnapshot(collection(db,"admins"),s=>{adminRoles={};s.docs.forEach(d=>adminRoles[d.id]=d.data());admins=s.docs.map(d=>d.id).sort();canWrite=admins.includes(myEmail());adminsLoaded=true;if(dataOn)subComplaints();evalAccess()},e=>{adminsLoaded=true;evalAccess()}));
+  unsubs.push(onSnapshot(doc(db,"members",myEmail()),s=>{myMember=s.exists()?s.data():null;evalAccess()},e=>{myMember=null;evalAccess()}));
+  unsubs.push(onSnapshot(doc(db,"config","setup"),s=>{setupDone=s.exists();evalAccess()},()=>{}));
+  unsubs.push(onSnapshot(doc(db,"config","flatIndex"),s=>{flatIndex=s.exists()?(s.data().flats||[]):[];render()},()=>{}));
+}
+function subscribeData(){
   loadTimer=setTimeout(()=>{if(!allGot()){setBanner(navigator.onLine?"Still loading… your connection may be slow.":"You're offline — showing saved data.");Object.keys(got).forEach(k=>got[k]=true);render()}},10000);
   const {onSnapshot,doc,collection}=F;
   unsubs.push(onSnapshot(doc(db,"config","society"),s=>{S.settings=s.exists()?{...DEF_SETTINGS,...s.data()}:{...DEF_SETTINGS};onSnap("settings")},onErr));
-  unsubs.push(onSnapshot(collection(db,"flats"),s=>{S.flats=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("flats")},onErr));
+  unsubs.push(onSnapshot(collection(db,"flats"),s=>{S.flats=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("flats");syncFlatIndex()},onErr));
   unsubs.push(onSnapshot(collection(db,"dues"),s=>{const o={};s.docs.forEach(d=>o[d.id]=d.data());S.dues=o;onSnap("dues")},onErr));
   unsubs.push(onSnapshot(collection(db,"activities"),s=>{S.acts=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("acts")},onErr));
-  unsubs.push(onSnapshot(collection(db,"admins"),s=>{admins=s.docs.map(d=>d.id).sort();canWrite=admins.includes(myEmail());render()},()=>{}));
-  unsubs.push(onSnapshot(doc(db,"config","setup"),s=>{setupDone=s.exists();render()},()=>{}));
+  unsubs.push(onSnapshot(F.query(collection(db,"announcements"),F.orderBy("createdAt","desc"),F.limit(100)),s=>{S.anns=s.docs.map(d=>({id:d.id,...d.data()}));render()},()=>{}));
+  subComplaints();
 }
 async function connect(){
   window.addEventListener("offline",()=>setBanner("You're offline — changes will sync when you reconnect."));
@@ -282,19 +299,358 @@ async function claimAdmin(){
   const em=myEmail();if(!em)return;
   try{
     const b=F.writeBatch(db);
-    b.set(F.doc(db,"admins",em),{email:em,addedBy:em,at:new Date().toISOString()});
+    b.set(F.doc(db,"admins",em),{email:em,role:"chairman",name:(me.displayName||""),addedBy:em,at:new Date().toISOString()});
     b.set(F.doc(db,"config","setup"),{firstAdmin:em,at:new Date().toISOString()});
     await b.commit();toast("You're now the society admin");
   }catch(e){toast(e&&e.code==="permission-denied"?"Someone has already set up this society":"Couldn't complete setup: "+(e&&e.code||""))}
 }
-function addAdmin(email){
+function addAdmin(email,name,role){
   email=String(email||"").trim().toLowerCase();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast("Enter a valid email");return}
-  if(admins.includes(email)){toast("Already a committee member");return}
-  run(()=>F.setDoc(F.doc(db,"admins",email),{email,addedBy:myEmail(),at:new Date().toISOString()}));
-  toast("Added "+email);
+  if(admins.includes(email)){toast("Already on the committee");return}
+  setAdmin(email,{name:str(name,60),role:ROLES[role]?role:"member"});toast("Added "+email);
 }
 function removeAdmin(email){run(()=>F.deleteDoc(F.doc(db,"admins",email)));toast("Removed "+email)}
+
+/* ---------- roles & permissions ---------- */
+const ROLES={chairman:"Chairman",secretary:"Secretary",treasurer:"Treasurer",member:"Committee member"};
+function myRole(){if(mode==="local")return "chairman";const r=adminRoles[myEmail()];return r?(ROLES[r.role]?r.role:"chairman"):null}
+function isCommittee(){return !!myRole()}
+function canManage(){return ["chairman","secretary"].includes(myRole())}
+function canPay(){return ["chairman","treasurer"].includes(myRole())}
+function canFlats(){return canManage()}
+function isMyFlat(f){return !!(myMember&&myMember.status==="approved"&&myMember.flatId===f.id)}
+function canEditFlat(f){return canManage()||canPay()||(isMyFlat(f)&&myMember.relation!=="Family")}
+function myFlats(){return sortFlats(S.flats.filter(isMyFlat))}
+function roleOf(email){const r=adminRoles[email];return r?(ROLES[r.role]?r.role:"chairman"):null}
+function committeeList(){const order=["chairman","secretary","treasurer","member"];return admins.map(e=>({email:e,role:roleOf(e),name:(adminRoles[e]||{}).name||""})).sort((a,b)=>order.indexOf(a.role)-order.indexOf(b.role))}
+
+/* ---------- extra data: announcements, complaints ---------- */
+const CMP_CATS={"Water":"💧","Electricity":"💡","Lift":"🛗","Security":"🛡️","Cleanliness":"🧹","Parking":"🚗","Noise":"🔊","Garden":"🌳","Other":"📝"};
+function lsGet(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let cmpMain=[], cmpAnon={}, cmpUnsubs=[], cmpScope=null, anonUnsubs={};
+function allComplaints(){const m=new Map();cmpMain.forEach(c=>m.set(c.id,c));Object.values(cmpAnon).forEach(c=>{if(c)m.set(c.id,{...c,mine:true})});return [...m.values()].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)))}
+function subComplaints(){
+  if(mode!=="db")return;
+  const scope=isCommittee()?"all":"mine:"+myEmail();
+  if(scope!==cmpScope){
+    cmpUnsubs.forEach(u=>{try{u()}catch(e){}});cmpUnsubs=[];cmpScope=scope;cmpMain=[];
+    const col=F.collection(db,"complaints");
+    const q=scope==="all"?col:F.query(col,F.where("byEmail","==",myEmail()));
+    cmpUnsubs.push(F.onSnapshot(q,s=>{cmpMain=s.docs.map(d=>({id:d.id,...d.data()}));render()},()=>{}));
+  }
+  lsGet("anonComplaints",[]).forEach(id=>{
+    if(anonUnsubs[id])return;
+    anonUnsubs[id]=F.onSnapshot(F.doc(db,"complaints",id),s=>{cmpAnon[id]=s.exists()?{id,...s.data()}:null;render()},()=>{});
+  });
+}
+function annSeenAt(){return lsGet("annSeen","")}
+function unreadAnns(){const t=annSeenAt();return S.anns.filter(a=>String(a.createdAt)>t).length}
+
+function saveAnn(id,body){
+  id=id||newId();const i=S.anns.findIndex(a=>a.id===id);const rec={id,...body};
+  if(i>=0)S.anns[i]=rec;else S.anns.unshift(rec);
+  return run(()=>F.setDoc(F.doc(db,"announcements",id),body));
+}
+function deleteAnn(id){S.anns=S.anns.filter(a=>a.id!==id);return run(()=>F.deleteDoc(F.doc(db,"announcements",id)))}
+function addComplaint(body){
+  const id=newId();
+  if(body.anonymous){const l=lsGet("anonComplaints",[]);l.push(id);lsSet("anonComplaints",l)}
+  if(mode!=="db"){cmpMain.unshift({id,...body,mine:true});render();return true}
+  if(body.anonymous)cmpAnon[id]={id,...body};else cmpMain.unshift({id,...body});
+  const ok=run(()=>F.setDoc(F.doc(db,"complaints",id),body));
+  setTimeout(subComplaints,800);return ok;
+}
+function updateComplaint(id,patch){
+  const upd=c=>c&&c.id===id?{...c,...patch}:c;cmpMain=cmpMain.map(upd);if(cmpAnon[id])cmpAnon[id]=upd(cmpAnon[id]);
+  return run(()=>F.updateDoc(F.doc(db,"complaints",id),patch));
+}
+function deleteComplaint(id){cmpMain=cmpMain.filter(c=>c.id!==id);delete cmpAnon[id];return run(()=>F.deleteDoc(F.doc(db,"complaints",id)))}
+function saveFlatOwner(id,patch){
+  const i=S.flats.findIndex(f=>f.id===id);if(i>=0)S.flats[i]={...S.flats[i],...patch};
+  return run(()=>F.updateDoc(F.doc(db,"flats",id),patch));
+}
+function setAdmin(email,data){
+  adminRoles[email]={...(adminRoles[email]||{}),...data};if(!admins.includes(email))admins.push(email);
+  return run(()=>F.setDoc(F.doc(db,"admins",email),{email,...adminRoles[email],addedBy:myEmail(),at:new Date().toISOString()}));
+}
+
+/* ---------- views: notices ---------- */
+function annCard(a,full){
+  return `<button class="act" data-ann="${esc(a.id)}" style="${a.important?"border-left:4px solid var(--red)":""}">
+    <div class="mid"><div class="pill-row"><div class="t1">${a.important?"🔴 ":"📢 "}${esc(a.title)}</div>${String(a.createdAt)>annSeenAt()&&!full?'<span class="badge b-red">New</span>':""}</div>
+    <div class="t2">${esc(fmtDate(String(a.createdAt).slice(0,10)))}${a.byRole?" · "+esc(ROLES[a.byRole]||""):""}</div>
+    <div class="desc">${esc(a.body)}</div></div></button>`;
+}
+function vNotices(){
+  const list=S.anns.slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  const newest=list[0]&&list[0].createdAt;
+  const html=`<h2 class="sec" style="margin-top:4px">🔔 Notice board</h2>
+  <div class="list">${list.length?list.map(a=>annCard(a)).join(""):`<div class="empty"><b>No announcements yet</b>${isCommittee()?"Tap + to post one for all residents.":"Announcements from the committee will appear here."}</div>`}</div>`;
+  if(newest&&newest>annSeenAt())setTimeout(()=>{lsSet("annSeen",newest);updateBell()},1500);
+  return html;
+}
+function updateBell(){const n=unreadAnns(),b=$("#annBadge");if(!b)return;b.textContent=n>9?"9+":n;b.hidden=!n}
+function sheetAnn(id){
+  const a=S.anns.find(x=>x.id===id);if(!a)return;
+  openSheet(`<h3><span>${a.important?"🔴 ":"📢 "}${esc(a.title)}</span>${closeBtn()}</h3>
+  <p class="small muted" style="margin-top:-8px">${esc(fmtDate(String(a.createdAt).slice(0,10)))}${a.byRole?" · "+esc(ROLES[a.byRole]||""):""}</p>
+  <div class="card"><p style="margin:0;white-space:pre-wrap">${esc(a.body)}</p></div>
+  <div class="actions"><button class="btn ghost" data-a="copyAnn" data-id="${esc(a.id)}">Copy for WhatsApp</button>${isCommittee()?`<button class="btn" data-a="editAnn" data-id="${esc(a.id)}">Edit</button>`:""}</div>`);
+}
+function sheetAnnForm(id){
+  const a=id?S.anns.find(x=>x.id===id)||{}:{};
+  openSheet(`<h3>${id?"Edit announcement":"New announcement"} ${closeBtn()}</h3>
+  <form id="fAnn" data-id="${esc(id||"")}">
+    <div class="f"><label>Title *</label><input name="title" required maxlength="100" value="${esc(a.title)}" placeholder="e.g. Water supply off on Sunday"></div>
+    <div class="f"><label>Message *</label><textarea name="body" required maxlength="3000" style="min-height:140px">${esc(a.body)}</textarea></div>
+    <label class="pill-row card" style="padding:12px 14px;margin-bottom:12px"><span><b>Mark as important</b><br><span class="small muted">Shown in red at the top of Home</span></span><input type="checkbox" name="important" ${a.important?"checked":""} style="width:22px;height:22px"></label>
+    <button class="btn block" type="submit">${id?"Save changes":"Post to all residents"}</button>
+    ${id?`<button class="btn danger block mt" type="button" data-a="delAnn" data-id="${esc(id)}">Delete</button>`:""}
+  </form>`);
+}
+
+/* ---------- views: complaints (help desk) ---------- */
+const CMP_ST={"Open":"b-red","In progress":"b-amber","Resolved":"b-green"};
+let cmpSeg="Open";
+function cmpCard(c){
+  return `<button class="act" data-cmp="${esc(c.id)}">
+    <div class="date" style="background:var(--grey-soft);font-size:22px;display:grid;place-items:center">${CMP_CATS[c.category]||"📝"}</div>
+    <div class="mid"><div class="pill-row"><div class="t1">${esc(c.title)}</div><span class="badge ${CMP_ST[c.status]||"b-grey"}">${esc(c.status)}</span></div>
+    <div class="t2">${esc(c.category||"Other")} · ${c.anonymous?"Anonymous":esc([c.byName,c.flat].filter(Boolean).join(", ")||"Resident")} · ${esc(fmtDate(String(c.createdAt).slice(0,10)))}</div>
+    ${c.reply?`<div class="desc">💬 ${esc(c.reply)}</div>`:""}</div></button>`;
+}
+function vHelp(){
+  const all=allComplaints();
+  const intro=`<div class="card small" style="margin-bottom:12px">Raise a complaint or request for the committee. You can post <b>anonymously</b>: your name and email are not saved.</div>`;
+  if(isCommittee()){
+    const c={};Object.keys(CMP_ST).forEach(k=>c[k]=all.filter(x=>x.status===k).length);
+    const L=all.filter(x=>x.status===cmpSeg);
+    return intro+`<div class="seg">${Object.keys(CMP_ST).map(k=>`<button class="${cmpSeg===k?"on":""}" data-cseg="${k}">${k} · ${c[k]}</button>`).join("")}</div>
+    <div class="list mt">${L.length?L.map(cmpCard).join(""):`<div class="empty"><b>No ${cmpSeg.toLowerCase()} complaints</b></div>`}</div>`;
+  }
+  return intro+`<h2 class="sec">My complaints</h2><div class="list">${all.length?all.map(cmpCard).join(""):`<div class="empty"><b>No complaints yet</b>Tap + to raise one.</div>`}</div>
+  <p class="small muted" style="margin:12px 4px">Anonymous complaints can be tracked only on the phone you raised them from.</p>`;
+}
+function sheetCmpForm(){
+  const mf=myFlats();
+  openSheet(`<h3>Raise a complaint ${closeBtn()}</h3>
+  <form id="fCmp">
+    <div class="f"><label>Category</label><select name="category">${Object.keys(CMP_CATS).map(k=>`<option>${k}</option>`).join("")}</select></div>
+    <div class="f"><label>Subject *</label><input name="title" required maxlength="100" placeholder="e.g. Lift B not working since morning"></div>
+    <div class="f"><label>Details *</label><textarea name="details" required maxlength="2000" placeholder="What, where, since when…"></textarea></div>
+    <label class="pill-row card" style="padding:12px 14px;margin-bottom:12px"><span><b>Post anonymously</b><br><span class="small muted">Your name, email and flat won't be saved</span></span><input type="checkbox" name="anonymous" id="cmpAnon" style="width:22px;height:22px"></label>
+    <div id="cmpWho">
+      <div class="frow"><div class="f"><label>Your name</label><input name="byName" maxlength="60" value="${esc(me&&me.displayName||"")}"></div>
+      <div class="f"><label>Flat</label>${mf.length?`<select name="flat">${mf.map(f=>`<option>${esc(f.number)}</option>`).join("")}<option value="">—</option></select>`:`<input name="flat" maxlength="12" placeholder="A-101">`}</div></div>
+    </div>
+    <button class="btn block" type="submit">Submit complaint</button>
+  </form>`);
+}
+function sheetCmp(id){
+  const c=allComplaints().find(x=>x.id===id);if(!c)return;
+  openSheet(`<h3><span>${CMP_CATS[c.category]||"📝"} ${esc(c.title)}</span>${closeBtn()}</h3>
+  <div class="card"><dl class="kv">
+    <dt>Status</dt><dd><span class="badge ${CMP_ST[c.status]||"b-grey"}">${esc(c.status)}</span></dd>
+    <dt>Category</dt><dd>${esc(c.category||"Other")}</dd>
+    <dt>Raised by</dt><dd>${c.anonymous?"Anonymous":esc(c.byName||"Resident")}</dd>
+    ${!c.anonymous&&c.flat?`<dt>Flat</dt><dd>${esc(c.flat)}</dd>`:""}
+    ${isCommittee()&&!c.anonymous&&c.byEmail?`<dt>Email</dt><dd>${esc(c.byEmail)}</dd>`:""}
+    <dt>Raised on</dt><dd>${esc(fmtDate(String(c.createdAt).slice(0,10)))}</dd>
+  </dl><p style="margin:12px 0 0;white-space:pre-wrap">${esc(c.details)}</p></div>
+  ${c.reply&&!isCommittee()?`<h2 class="sec">Committee response</h2><div class="card" style="white-space:pre-wrap">${esc(c.reply)}</div>`:""}
+  ${isCommittee()?`<h2 class="sec">Committee action</h2><form id="fCmpUpd" data-id="${esc(c.id)}">
+    <div class="f"><label>Status</label><select name="status">${Object.keys(CMP_ST).map(k=>`<option ${k===c.status?"selected":""}>${k}</option>`).join("")}</select></div>
+    <div class="f"><label>Response to resident</label><textarea name="reply" maxlength="1500" placeholder="e.g. Plumber visiting tomorrow 10 AM">${esc(c.reply)}</textarea></div>
+    <button class="btn block" type="submit">Update</button>
+    ${canManage()?`<button class="btn danger block mt" type="button" data-a="delCmp" data-id="${esc(c.id)}">Delete complaint</button>`:""}
+  </form>`:""}`);
+}
+
+/* ---------- views: reports ---------- */
+let rpt={period:"fy"};
+function fyStart(m){const [y,mo]=m.split("-").map(Number);return (mo>=4?y:y-1)+"-04"}
+function monthsBetween(a,b){const out=[];let m=a;let g=0;while(m<=b&&g++<240){out.push(m);m=shiftMonth(m,1)}return out}
+function rptRange(){
+  const cm=curMonth();
+  if(rpt.period==="fy")return [fyStart(cm),cm];
+  if(rpt.period==="lastfy"){const s=shiftMonth(fyStart(cm),-12);return [s,shiftMonth(s,11)]}
+  if(rpt.period==="month")return [month,month];
+  const f=rpt.from||fyStart(cm),t=rpt.to||cm;return f<=t?[f,t]:[t,f];
+}
+function flatReport(f,ms){
+  let due=0,paid=0,mDue=0,mPaid=0;const rows=[];
+  ms.forEach(m=>{if(!applies(f,m)){rows.push({m,na:true});return}
+    const a=flatAmount(f),r=payRec(m,f.id);mDue++;due+=a;
+    if(r&&r.paid){const p=num(r.amount)||a;paid+=p;mPaid++;rows.push({m,due:a,paid:p,r})}else rows.push({m,due:a,paid:0});
+  });
+  return {due,paid,bal:due-paid,mDue,mPaid,rows};
+}
+function vReports(){
+  const [from,to]=rptRange();const ms=monthsBetween(from,to);
+  const flats=sortFlats(S.flats);const R=flats.map(f=>({f,...flatReport(f,ms)}));
+  const T=R.reduce((t,x)=>({due:t.due+x.due,paid:t.paid+x.paid}),{due:0,paid:0});
+  const defaulters=R.filter(x=>x.bal>0).length;
+  return `<div class="noprint"><h2 class="sec" style="margin-top:4px">📊 Maintenance report</h2>
+  <div class="chips">${[["fy","This financial year"],["lastfy","Last financial year"],["custom","Custom"]].map(([k,l])=>`<button class="chip ${rpt.period===k?"on":""}" data-rp="${k}">${l}</button>`).join("")}</div>
+  ${rpt.period==="custom"?`<div class="frow mt"><div class="f"><label>From</label><input type="month" id="rpFrom" value="${esc(from)}"></div><div class="f"><label>To</label><input type="month" id="rpTo" value="${esc(to)}"></div></div>`:""}</div>
+  <div class="printhead"><h2 style="margin:0">${esc(S.settings.name||"Society")} — Maintenance report</h2><p class="small muted" style="margin:2px 0 0">${esc(monthLabel(from))} to ${esc(monthLabel(to))} · generated ${esc(fmtDate(todayISO()))}</p></div>
+  <div class="grid3 mt">
+    <div class="card stat"><div class="n" style="font-size:18px">${inr(T.due)}</div><div class="l">Total due</div></div>
+    <div class="card stat"><div class="n" style="font-size:18px;color:var(--pri)">${inr(T.paid)}</div><div class="l">Collected</div></div>
+    <div class="card stat"><div class="n" style="font-size:18px;color:var(--red)">${inr(Math.max(T.due-T.paid,0))}</div><div class="l">Outstanding · ${defaulters} flats</div></div>
+  </div>
+  <div class="actions noprint"><button class="btn sec" data-a="csv">⬇ Download Excel (CSV)</button><button class="btn ghost" data-a="print">🖨 Print / PDF</button></div>
+  <div class="card mt" style="padding:0;overflow-x:auto"><table class="rt"><thead><tr><th>Flat</th><th>Name</th><th>Months paid</th><th class="r">Due</th><th class="r">Paid</th><th class="r">Balance</th></tr></thead>
+  <tbody>${R.map(x=>`<tr data-stmt="${esc(x.f.id)}"><td><b>${esc(x.f.number)}</b></td><td>${esc((x.f.occupancy==="Tenant"?x.f.tenant:x.f.owner)||x.f.owner||"")}</td><td>${x.mPaid}/${x.mDue}</td><td class="r">${inr(x.due)}</td><td class="r">${inr(x.paid)}</td><td class="r" style="color:${x.bal>0?"var(--red)":"var(--pri)"};font-weight:700">${inr(x.bal)}</td></tr>`).join("")}
+  <tr class="tot"><td colspan="3">Total (${R.length} flats)</td><td class="r">${inr(T.due)}</td><td class="r">${inr(T.paid)}</td><td class="r">${inr(T.due-T.paid)}</td></tr></tbody></table></div>
+  <p class="small muted noprint" style="margin:10px 4px">Tap a flat for its month-by-month statement. Due amounts use each flat's current monthly rate.</p>`;
+}
+function sheetStatement(id){
+  const f=S.flats.find(x=>x.id===id);if(!f)return;
+  const [from,to]=tab==="reports"?rptRange():[fyStart(curMonth()),curMonth()];
+  const x=flatReport(f,monthsBetween(from,to));
+  openSheet(`<h3><span>Statement · ${esc(f.number)}</span>${closeBtn()}</h3>
+  <p class="small muted" style="margin-top:-8px">${esc(monthLabel(from))} – ${esc(monthLabel(to))} · ${esc(f.owner||"")}</p>
+  <div class="grid3"><div class="card stat"><div class="n" style="font-size:17px">${inr(x.due)}</div><div class="l">Due</div></div>
+  <div class="card stat"><div class="n" style="font-size:17px;color:var(--pri)">${inr(x.paid)}</div><div class="l">Paid</div></div>
+  <div class="card stat"><div class="n" style="font-size:17px;color:${x.bal>0?"var(--red)":"var(--pri)"}">${inr(x.bal)}</div><div class="l">Balance</div></div></div>
+  <div class="card mt" style="padding:0;overflow-x:auto"><table class="rt"><thead><tr><th>Month</th><th class="r">Due</th><th class="r">Paid</th><th>Date / mode</th></tr></thead><tbody>
+  ${x.rows.slice().reverse().map(r=>r.na?`<tr><td>${esc(monthLabel(r.m,true))}</td><td colspan="3" class="muted">Not applicable</td></tr>`:`<tr><td>${esc(monthLabel(r.m,true))}</td><td class="r">${inr(r.due)}</td><td class="r" style="color:${r.paid?"var(--pri)":"var(--red)"}">${r.paid?inr(r.paid):"Pending"}</td><td class="small">${r.r?esc(fmtDate(r.r.date)+" · "+(r.r.mode||"")+(r.r.ref?" · "+r.r.ref:"")):""}</td></tr>`).join("")}
+  </tbody></table></div>`);
+}
+function csvCell(v){v=String(v==null?"":v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function downloadCSV(){
+  const [from,to]=rptRange();const ms=monthsBetween(from,to);
+  const head=["Flat","Owner","Tenant","Phone","Months due","Months paid","Amount due","Amount paid","Balance",...ms.map(m=>monthLabel(m,true))];
+  const lines=[head];
+  sortFlats(S.flats).forEach(f=>{const x=flatReport(f,ms);
+    lines.push([f.number,f.owner,f.tenant,f.phone,x.mDue,x.mPaid,x.due,x.paid,x.bal,...x.rows.map(r=>r.na?"-":r.paid?("Paid "+r.paid):"Pending")])});
+  const csv="﻿"+lines.map(l=>l.map(csvCell).join(",")).join("\r\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.download=`maintenance-report-${from}-to-${to}.csv`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+  toast("Report downloaded — open it in Excel or Google Sheets");
+}
+
+/* ---------- views: committee in settings ---------- */
+function committeeSection(){
+  if(mode!=="db")return "";
+  const L=committeeList();
+  return `<h2 class="sec">Managing committee</h2>
+  <div class="card"><div class="list">${L.map(c=>`<div style="border-bottom:1px solid var(--line);padding-bottom:10px">
+    <div class="pill-row"><div style="min-width:0"><b>${esc(c.name||c.email)}</b>${c.email===myEmail()?' <span class="badge b-green">You</span>':""}<div class="small muted" style="word-break:break-all">${esc(c.email)}</div></div>
+    ${canManage()?`<select data-role-email="${esc(c.email)}" style="padding:7px;border-radius:10px;border:1px solid var(--line)">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${k===c.role?"selected":""}>${v}</option>`).join("")}</select>`:`<span class="badge b-blue">${esc(ROLES[c.role])}</span>`}</div>
+    ${canManage()&&c.email!==myEmail()?`<button class="btn sm danger mt" data-a="rmAdmin" data-id="${esc(c.email)}">Remove from committee</button>`:""}
+  </div>`).join("")}</div>
+  ${canManage()?`<form id="fAdmin" class="mt">
+    <div class="f"><label>Gmail address</label><input name="email" type="email" required></div>
+    <div class="frow"><div class="f"><label>Name</label><input name="name" maxlength="60"></div>
+    <div class="f"><label>Role</label><select name="role">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${k==="member"?"selected":""}>${v}</option>`).join("")}</select></div></div>
+    <button class="btn block" type="submit">Add to committee</button></form>`:""}
+  <p class="small muted" style="margin:10px 0 0"><b>Chairman</b>: everything. <b>Secretary</b>: everything except recording payments. <b>Treasurer</b>: payments, maintenance amounts, notices. <b>Committee member</b>: notices, events and complaints.</p></div>
+  <h2 class="sec">Account</h2>
+  <div class="card pill-row"><span class="small" style="word-break:break-all">Signed in as <b>${esc(me&&me.email||"")}</b>${myRole()?" · "+esc(ROLES[myRole()]):""}${myMember?"<br>Flat "+esc(myMember.flatNumber)+" · "+esc(RELS[myMember.relation]||"")+" · "+esc(myMember.status):""}</span><button class="btn sm ghost" data-a="signout">Sign out</button></div>
+  ${isCommittee()&&!myMember?`<button class="btn sec block mt" data-a="joinEdit">Link my own flat</button>`:""}`;
+}
+
+/* ---------- home additions ---------- */
+function homeTop(){
+  let h="";
+  const anns=S.anns.slice().sort((a,b)=>(b.important?1:0)-(a.important?1:0)||String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,2);
+  if(anns.length)h+=`<h2 class="sec" style="margin-top:0">Notices <button data-go="notices">See all</button></h2><div class="list" style="margin-bottom:14px">${anns.map(a=>annCard(a)).join("")}</div>`;
+  const cm=curMonth();
+  myFlats().forEach(f=>{const paid=isPaid(cm,f.id);const x=flatReport(f,monthsBetween(fyStart(cm),cm));
+    h+=`<h2 class="sec" style="margin-top:0">My flat · ${esc(f.number)}</h2><div class="card" style="margin-bottom:14px"><div class="pill-row"><span>${esc(monthLabel(cm,true))}: ${paid?'<span class="badge b-green">Paid</span>':'<span class="badge b-amber">Due '+inr(flatAmount(f))+'</span>'}</span><span class="small">Balance this year: <b style="color:${x.bal>0?"var(--red)":"var(--pri)"}">${inr(x.bal)}</b></span></div>
+    <div class="actions"><button class="btn ghost" data-stmt="${esc(f.id)}">Statement</button><button class="btn" data-a="editFlat" data-id="${esc(f.id)}">Edit my details</button></div></div>`});
+  return h;
+}
+function homeCommittee(){
+  if(!isCommittee())return `<div class="grid2 mt"><button class="card stat" style="text-align:left" data-go="help"><div class="n">🛠️</div><div class="l">Raise a complaint</div></button><button class="card stat" style="text-align:left" data-go="notices"><div class="n">🔔</div><div class="l">Notice board</div></button></div>`;
+  const open=allComplaints().filter(c=>c.status!=="Resolved").length;
+  return `<div class="grid2 mt"><button class="card stat" style="text-align:left" data-go="help"><div class="n" style="color:${open?"var(--red)":"var(--pri)"}">${open}</div><div class="l">Open complaints</div></button>
+  <button class="card stat" style="text-align:left" data-go="reports"><div class="n">📊</div><div class="l">Maintenance report</div></button></div>`;
+}
+
+/* ---------- resident sign-up (flat selection + approval) ---------- */
+let myMember=undefined, adminsLoaded=false, dataOn=false, membersOn=false, members=[], flatIndex=[], flatIdxTimer=null;
+const RELS={Owner:"Owner",Tenant:"Tenant",Family:"Family member"};
+function access(){
+  if(mode==="local")return "ok";
+  if(mode!=="db")return "none";
+  if(!adminsLoaded||myMember===undefined)return "loading";
+  if(isCommittee()||(myMember&&myMember.status==="approved"))return "ok";
+  if(!setupDone)return "setup";
+  return myMember?myMember.status:"new";
+}
+function evalAccess(){
+  if(access()==="ok"&&!dataOn){dataOn=true;subscribeData()}
+  if(mode==="db"&&canManage()&&!membersOn){membersOn=true;
+    unsubs.push(F.onSnapshot(F.collection(db,"members"),s=>{members=s.docs.map(d=>({id:d.id,...d.data()}));render()},()=>{}));}
+  render();
+}
+function syncFlatIndex(){
+  if(mode!=="db"||!canManage())return;
+  clearTimeout(flatIdxTimer);
+  flatIdxTimer=setTimeout(()=>{
+    const want=sortFlats(S.flats).map(f=>({id:f.id,number:String(f.number||"")}));
+    if(JSON.stringify(want)!==JSON.stringify(flatIndex)){flatIndex=want;run(()=>F.setDoc(F.doc(db,"config","flatIndex"),{flats:want,updatedAt:new Date().toISOString()}))}
+  },2000);
+}
+function vJoin(){
+  const st=access();
+  if(st==="loading")return '<div class="loading">Checking your access…</div>';
+  if(st==="setup")return claimCard()+`<div class="card small muted">If you're a resident, please wait until the committee finishes setting up the app.</div>`;
+  if(st==="pending")return `<div class="card" style="text-align:center;padding:26px 18px;margin-top:10px"><div style="font-size:40px">⏳</div>
+    <h3 style="margin:8px 0 6px">Waiting for approval</h3>
+    <p class="muted small" style="margin:0 0 14px">You asked to join as <b>${esc(RELS[myMember.relation]||myMember.relation)}</b> of flat <b>${esc(myMember.flatNumber)}</b>. The society committee will check and approve you. This page updates by itself.</p>
+    <button class="btn ghost block" data-a="joinEdit">Change my request</button></div>`;
+  const rej=st==="rejected";
+  return `<div class="card" style="margin-top:10px">
+    <h3 style="margin:0 0 6px;font-size:19px">${rej?"Request not approved":"Welcome! Tell us your flat"}</h3>
+    <p class="muted small" style="margin:0 0 14px">${rej?"The committee could not verify your last request. Check the details and send it again, or contact the committee.":"The committee will verify you before you can see society details. This is a one-time step."}</p>
+    ${joinForm()}</div>`;
+}
+function joinForm(){
+  const m=myMember||{};
+  if(!flatIndex.length)return `<p class="small">The committee hasn't added flats yet. Please check again later.</p>`;
+  return `<form id="fJoin">
+    <div class="f"><label>Your full name *</label><input name="name" required maxlength="60" value="${esc(m.name||(me&&me.displayName)||"")}"></div>
+    <div class="f"><label>Mobile number *</label><input name="phone" type="tel" required maxlength="16" value="${esc(m.phone||"")}" placeholder="98xxxxxxxx"></div>
+    <div class="frow"><div class="f"><label>Flat number *</label><select name="flatId" required><option value="">Select…</option>${flatIndex.map(f=>`<option value="${esc(f.id)}" ${f.id===m.flatId?"selected":""}>${esc(f.number)}</option>`).join("")}</select></div>
+    <div class="f"><label>You are the *</label><select name="relation">${Object.entries(RELS).map(([k,v])=>`<option value="${k}" ${k===m.relation?"selected":""}>${v}</option>`).join("")}</select></div></div>
+    <p class="small muted" style="margin:-4px 0 12px">Signed in as ${esc(me&&me.email||"")}</p>
+    <button class="btn block" type="submit">Send for approval</button></form>`;
+}
+function submitJoin(fd){
+  const fi=flatIndex.find(f=>f.id===fd.get("flatId"));if(!fi){toast("Please select your flat");return}
+  const body={email:myEmail(),name:str(fd.get("name"),60),phone:str(fd.get("phone"),16),flatId:fi.id,flatNumber:fi.number,relation:RELS[fd.get("relation")]?fd.get("relation"):"Owner",status:"pending",requestedAt:new Date().toISOString()};
+  myMember=body;render();closeSheet();
+  run(()=>F.setDoc(F.doc(db,"members",myEmail()),body));toast("Request sent to the committee");
+}
+function decideMember(email,status){
+  const i=members.findIndex(m=>m.id===email);if(i>=0)members[i]={...members[i],status};
+  run(()=>F.updateDoc(F.doc(db,"members",email),{status,decidedBy:myEmail(),decidedAt:new Date().toISOString()}));
+  toast(status==="approved"?"Approved":"Request rejected");
+}
+function removeMember(email){members=members.filter(m=>m.id!==email);run(()=>F.deleteDoc(F.doc(db,"members",email)));toast("Access removed")}
+function joinRequestsCard(){
+  if(!canManage())return "";
+  const P=members.filter(m=>m.status==="pending").sort((a,b)=>String(a.requestedAt).localeCompare(String(b.requestedAt)));
+  if(!P.length)return "";
+  return `<h2 class="sec" style="margin-top:0">Join requests · ${P.length}</h2><div class="list" style="margin-bottom:14px">${P.map(m=>{
+    const f=S.flats.find(x=>x.id===m.flatId)||{};
+    const others=members.filter(x=>x.flatId===m.flatId&&x.status==="approved");
+    const hint=[f.owner&&("Owner on record: "+f.owner),f.phone&&("phone "+f.phone),others.length&&("already approved: "+others.map(o=>o.name).join(", "))].filter(Boolean).join(" · ");
+    return `<div class="card"><div class="pill-row"><div style="min-width:0"><b>${esc(m.name)}</b> <span class="badge b-blue">${esc(m.flatNumber)} · ${esc(RELS[m.relation]||m.relation)}</span>
+      <div class="small muted" style="word-break:break-all">${esc(m.phone)} · ${esc(m.email)}</div>${hint?`<div class="small" style="margin-top:4px;color:#7a5212">${esc(hint)}</div>`:""}</div></div>
+      <div class="actions"><button class="btn danger sm" data-a="rejMember" data-id="${esc(m.id)}">Reject</button><button class="btn sm" data-a="okMember" data-id="${esc(m.id)}">Approve</button></div></div>`}).join("")}</div>`;
+}
+function flatUsersHTML(f){
+  if(!canManage())return "";
+  const U=members.filter(m=>m.flatId===f.id&&m.status==="approved");
+  return `<h2 class="sec">App users for this flat</h2><div class="card">${U.length?U.map(m=>`<div class="pill-row" style="padding:6px 0"><span><b>${esc(m.name)}</b> · ${esc(RELS[m.relation]||m.relation)}<br><span class="small muted">${esc(m.phone)} · ${esc(m.email)}</span></span><button class="btn sm danger" data-a="rmMember" data-id="${esc(m.id)}">Remove</button></div>`).join(""):'<span class="small muted">Nobody from this flat has joined the app yet.</span>'}</div>`;
+}
 
 /* ---------- render ---------- */
 function render(){
@@ -302,12 +658,15 @@ function render(){
   $("#hName").textContent=st.name||"Society Manager";
   $("#hSub").textContent=st.address||(S.flats.length?S.flats.length+" flats":"Set up your society");
   document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
-  const fab=$("#fab");fab.hidden=!(editable()&&(tab==="flats"||tab==="activities"));
+  const fab=$("#fab");fab.hidden=!((tab==="flats"&&canFlats())||(tab==="activities"&&isCommittee())||(tab==="notices"&&isCommittee())||(tab==="help"&&mode!=="signin"));updateBell();$("#bell").hidden=mode==="signin";
   $("#gear").hidden=mode==="signin";
-  if(mode==="signin"){$("#main").innerHTML=vSignin();$("#hSub").textContent="Sign in to continue";return}
+  if(mode==="signin"){document.querySelector("nav.tabs").hidden=true;$("#main").innerHTML=vSignin();$("#hSub").textContent="Sign in to continue";return}
+  if(mode==="db"&&access()!=="ok"){$("#main").innerHTML=vJoin();$("#hSub").textContent="Resident verification";$("#fab").hidden=true;$("#bell").hidden=true;document.querySelector("nav.tabs").hidden=true;return}
+  document.querySelector("nav.tabs").hidden=false;
   if(mode==="connecting"||(!allGot()&&mode!=="local")){$("#main").innerHTML='<div class="loading">Loading society data…</div>';return}
   const m=$("#main");
-  m.innerHTML=tab==="home"?vHome():tab==="flats"?vFlats():tab==="dues"?vDues():vActs();
+  const V={home:vHome,flats:vFlats,dues:vDues,help:vHelp,activities:vActs,notices:vNotices,reports:()=>isCommittee()?vReports():`<div class="empty"><b>Reports are for the committee</b>Your own statement is under Home → My flat.</div>`};
+  m.innerHTML=(V[tab]||vHome)();
   if(tab==="flats"){const s=$("#flatQ");if(s&&render._focusQ){s.focus();s.setSelectionRange(s.value.length,s.value.length)}}
 }
 function dueStats(m){
@@ -346,7 +705,7 @@ function vHome(){
       <div style="font-size:40px">🏢</div>
       <h3 style="margin:8px 0 6px;font-size:19px">Welcome to Society Manager</h3>
       <p class="muted small" style="margin:0 0 16px">Track flats and residents, monthly maintenance and society activities in one place.</p>
-      ${editable()?`<div class="list"><button class="btn ${done?"ghost":""} block" data-a="settings">${done?"✓ Society details added":"1 · Add society details"}</button>
+      ${canFlats()?`<div class="list"><button class="btn ${done?"ghost":""} block" data-a="settings">${done?"✓ Society details added":"1 · Add society details"}</button>
       <button class="btn ${done?"":"sec"} block" data-a="bulk">2 · Add flats (bulk)</button>
       <button class="btn ghost block" data-go="flats">or add flats one by one</button></div>`:`<p class="muted small">The committee hasn't added any details yet.</p>`}
     </div>`;
@@ -359,13 +718,13 @@ function vHome(){
   const res=S.flats.reduce((s,f)=>s+num(f.members),0);
   const ongoing=S.acts.filter(a=>actBucket(a)==="ongoing").sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   const upcoming=S.acts.filter(a=>actBucket(a)==="upcoming").sort((a,b)=>String(a.date||"9").localeCompare(String(b.date||"9"))).slice(0,3);
-  return claimCard()+`
+  return claimCard()+joinRequestsCard()+homeTop()+`
   <button class="hero" style="display:block;width:100%;text-align:left" data-go="dues">
     <div class="l">Maintenance · ${esc(monthLabel(cm))}</div>
     <div class="big">${inr(ds.coll)} <span style="font-size:15px;font-weight:600;opacity:.8">of ${inr(ds.total)}</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
     <div class="row"><span>${ds.paidN} paid · ${ds.pendN} pending</span><span>${pct}% collected</span></div>
-  </button>
+  </button>${homeCommittee()}
   <h2 class="sec">Flats & residents</h2>
   <div class="grid2">
     <button class="card stat" style="text-align:left" data-go="flats" data-ff="all"><div class="n">${S.flats.length}</div><div class="l">Total flats</div></button>
@@ -397,7 +756,7 @@ function vFlats(){
   return `
   <input class="search" id="flatQ" type="search" placeholder="Search flat, name, phone, vehicle…" value="${esc(flatQ)}">
   <div class="chips">${chip("all","All")}${chip("Owner","Owner")}${chip("Tenant","Tenant")}${chip("Vacant","Vacant")}${chip("pending","Dues pending")}</div>
-  ${editable()&&S.flats.length?`<div style="text-align:right;margin:4px 0 8px"><button class="btn sm sec" data-a="bulk">+ Bulk add flats</button></div>`:""}
+  ${canFlats()&&S.flats.length?`<div style="text-align:right;margin:4px 0 8px"><button class="btn sm sec" data-a="bulk">+ Bulk add flats</button></div>`:""}
   <div class="list mt">${list.length?list.map(f=>{
     const paid=isPaid(cm,f.id);
     const who=f.occupancy==="Tenant"?(f.tenant||f.owner):f.owner;
@@ -405,8 +764,8 @@ function vFlats(){
       <div class="av">${initials(f)}</div>
       <div class="mid"><div class="t1">${who?esc(who):'<span class="muted" style="font-weight:500">Name not added</span>'}</div>
       <div class="t2">${f.occupancy==="Tenant"&&f.owner?"Owner: "+esc(f.owner)+" · ":""}${esc(f.type||"")}${f.members?" · "+esc(f.members)+" members":""}</div></div>
-      <div class="end">${occBadge(f)}${paid?'<span class="badge b-green">Paid</span>':`<span class="badge ${overdue(cm)?"b-red":"b-amber"}">Due ${inr(flatAmount(f))}</span>`}</div>
-    </button>`}).join(""):`<div class="empty"><b>${S.flats.length?"No matching flats":"No flats yet"}</b>${S.flats.length?"Try a different search or filter.":editable()?'Tap <b style="display:inline">+</b> to add a flat, or use bulk add.':"The committee hasn't added flats yet."}</div>`}</div>`;
+      <div class="end">${isMyFlat(f)?'<span class="badge b-blue">My flat</span>':occBadge(f)}${paid?'<span class="badge b-green">Paid</span>':`<span class="badge ${overdue(cm)?"b-red":"b-amber"}">Due ${inr(flatAmount(f))}</span>`}</div>
+    </button>`}).join(""):`<div class="empty"><b>${S.flats.length?"No matching flats":"No flats yet"}</b>${S.flats.length?"Try a different search or filter.":canFlats()?'Tap <b style="display:inline">+</b> to add a flat, or use bulk add.':"The committee hasn't added flats yet."}</div>`}</div>`;
 }
 function vDues(){
   const ds=dueStats(month);
@@ -414,7 +773,7 @@ function vDues(){
   let list=sortFlats(S.flats).filter(f=>applies(f,month)).filter(f=>duesFilter==="all"?true:duesFilter==="paid"?isPaid(month,f.id):!isPaid(month,f.id));
   const od=overdue(month);
   return `
-  <div class="monthbar"><button data-a="mPrev" aria-label="Previous month">‹</button><div class="m">${esc(monthLabel(month))}</div><button data-a="mNext" aria-label="Next month">›</button></div>
+  ${isCommittee()?`<div style="text-align:right;margin-bottom:8px"><button class="btn sm sec" data-go="reports">📊 Report by flat</button></div>`:""}<div class="monthbar"><button data-a="mPrev" aria-label="Previous month">‹</button><div class="m">${esc(monthLabel(month))}</div><button data-a="mNext" aria-label="Next month">›</button></div>
   <div class="grid3 mt">
     <div class="card stat"><div class="n" style="font-size:19px;color:var(--pri)">${inr(ds.coll)}</div><div class="l">Collected</div></div>
     <div class="card stat"><div class="n" style="font-size:19px;color:${od?"var(--red)":"var(--amber)"}">${inr(Math.max(ds.total-ds.coll,0))}</div><div class="l">Pending</div></div>
@@ -432,7 +791,7 @@ function vDues(){
       <button class="av" data-flat="${esc(f.id)}">${initials(f)}</button>
       <button class="mid" style="text-align:left" data-flat="${esc(f.id)}"><div class="t1">${who?esc(who):'<span class="muted" style="font-weight:500">Flat '+esc(f.number)+'</span>'}</div>
         <div class="t2">${paid?`${inr(r.amount||flatAmount(f))} · ${esc(r.mode||"")} · ${esc(fmtDate(r.date))}`:`${inr(flatAmount(f))} due`}</div></button>
-      <div class="end">${paid?`<button class="badge b-green" data-pay="${esc(f.id)}">✓ Paid</button>`:editable()?`<button class="btn sm" data-pay="${esc(f.id)}">Mark paid</button>`:`<span class="badge ${od?"b-red":"b-amber"}">Pending</span>`}</div>
+      <div class="end">${paid?`<button class="badge b-green" data-pay="${esc(f.id)}">✓ Paid</button>`:canPay()?`<button class="btn sm" data-pay="${esc(f.id)}">Mark paid</button>`:`<span class="badge ${od?"b-red":"b-amber"}">Pending</span>`}</div>
     </div>`}).join(""):`<div class="empty"><b>${!S.flats.length?"No flats yet":duesFilter==="pending"?"All dues cleared 🎉":"No payments recorded"}</b>${!S.flats.length?"Add flats first from the Flats tab.":""}</div>`}</div>`;
 }
 const CAT_ICON={"Meeting":"🗣️","Event":"🎉","Festival":"🪔","Maintenance work":"🛠️","Notice":"📢","Other":"📌"};
@@ -463,7 +822,8 @@ function closeSheet(){$("#sheet").classList.remove("on");$("#scrim").classList.r
 function closeBtn(){return `<button class="btn sm ghost" data-a="close">Close</button>`}
 
 function sheetSettings(){
-  const s=S.settings, ro=!editable();
+  if(mode==="db"&&access()!=="ok"){openSheet(`<h3>Account ${closeBtn()}</h3><div class="card pill-row"><span class="small" style="word-break:break-all">Signed in as <b>${esc(me&&me.email||"")}</b></span><button class="btn sm ghost" data-a="signout">Sign out</button></div>`);return}
+  const s=S.settings, ro=!(canManage()||canPay());
   openSheet(`<h3>Society details ${closeBtn()}</h3>
   <form id="fSettings">
     <div class="f"><label>Society name</label><input name="name" required maxlength="80" value="${esc(s.name)}" ${ro?"disabled":""} placeholder="e.g. Green Valley CHS"></div>
@@ -475,11 +835,7 @@ function sheetSettings(){
     <div class="f"><label>Society UPI ID (shown in reminders)</label><input name="upi" maxlength="80" value="${esc(s.upi)}" ${ro?"disabled":""} placeholder="e.g. greenvalley@okhdfc"></div>
     ${ro?'<p class="small muted">Only committee members can change these details.</p>':'<button class="btn block" type="submit">Save</button>'}
   </form>
-  ${mode==="db"?`<h2 class="sec">Committee (can edit)</h2>
-  <div class="card"><div class="list">${admins.length?admins.map(a=>`<div class="pill-row"><span style="word-break:break-all">${esc(a)}${a===myEmail()?' <span class="badge b-green">You</span>':""}</span>${canWrite&&a!==myEmail()?`<button class="btn sm danger" data-a="rmAdmin" data-id="${esc(a)}">Remove</button>`:""}</div>`).join(""):'<span class="muted small">No committee members yet.</span>'}</div>
-  ${canWrite?`<form id="fAdmin" class="mt" style="display:flex;gap:8px"><input name="email" type="email" required placeholder="Gmail address" style="flex:1;padding:10px 12px;border-radius:12px;border:1px solid var(--line)"><button class="btn sm" type="submit">Add</button></form><p class="small muted" style="margin:8px 0 0">They must sign in with this exact Google account.</p>`:""}</div>
-  <h2 class="sec">Account</h2>
-  <div class="card pill-row"><span class="small" style="word-break:break-all">Signed in as <b>${esc(me&&me.email||"")}</b></span><button class="btn sm ghost" data-a="signout">Sign out</button></div>`:""}`);
+  ${committeeSection()}`);
 }
 function sheetBulk(){
   openSheet(`<h3>Bulk add flats ${closeBtn()}</h3>
@@ -523,12 +879,13 @@ function sheetFlat(id){
     <dt>Maintenance</dt><dd>${inr(flatAmount(f))}/month${f.since?" from "+esc(monthLabel(f.since,true)):""}</dd>
     ${f.notes?`<dt>Notes</dt><dd style="font-weight:500">${esc(f.notes)}</dd>`:""}
   </dl></div>
+  ${flatUsersHTML(f)}
   <h2 class="sec">Last 6 months</h2>
   <div class="card"><div class="months">${ms.map(m=>{const p=isPaid(m,f.id),ap=applies(f,m);return `<div class="${p?"b-green":!ap?"b-grey":overdue(m)?"b-red":"b-amber"}">${esc(monthLabel(m,true).split(" ")[0].slice(0,3))}<br>${p?"✓":!ap?"–":"Due"}</div>`}).join("")}</div>
   ${pending.length?`<p class="small" style="margin:10px 0 0">Pending: <b>${pending.length} month(s) · ${inr(pending.length*flatAmount(f))}</b></p>`:`<p class="small muted" style="margin:10px 0 0">All clear for the last 6 months.</p>`}</div>
   <div class="actions">
     ${wa&&pending.length?`<a class="btn sec" href="https://wa.me/${wa}?text=${encodeURIComponent(remText(f,pending))}" target="_blank" rel="noopener">WhatsApp reminder</a>`:""}
-    ${editable()?`<button class="btn" data-a="editFlat" data-id="${esc(f.id)}">Edit details</button>`:""}
+    <button class="btn ghost" data-stmt="${esc(f.id)}">Statement</button>${canEditFlat(f)?`<button class="btn" data-a="editFlat" data-id="${esc(f.id)}">Edit details</button>`:""}
   </div>`);
 }
 function remText(f,months){
@@ -537,10 +894,12 @@ function remText(f,months){
 }
 function sheetFlatForm(id){
   const f=id?S.flats.find(x=>x.id===id)||{}:{occupancy:"Owner",type:"2 BHK"};
+  const own=!!id&&!(canManage()||canPay());const lk=canManage()?"":"readonly";
   const o=(v,cur)=>`<option ${v===cur?"selected":""}>${v}</option>`;
   openSheet(`<h3>${id?"Edit flat "+esc(f.number):"Add flat"} ${closeBtn()}</h3>
-  <form id="fFlat" data-id="${esc(id||"")}">
-    <div class="frow"><div class="f"><label>Flat number *</label><input name="number" required maxlength="12" value="${esc(f.number)}" placeholder="A-101"></div>
+  <form id="fFlat" data-id="${esc(id||"")}" data-owner="${own?1:0}">
+    ${own?`<p class="small muted" style="margin-top:-6px">Update your contact and family details. Flat number and maintenance amount are managed by the committee.</p>`:""}
+    <div class="frow" ${own?"hidden":""}><div class="f"><label>Flat number *</label><input name="number" ${own?"":"required"} maxlength="12" value="${esc(f.number)}" placeholder="A-101"></div>
     <div class="f"><label>Type</label><select name="type">${["1 BHK","2 BHK","3 BHK","4 BHK","Shop","Other"].map(v=>o(v,f.type)).join("")}</select></div></div>
     <div class="f"><label>Status</label><div class="seg" id="occSeg">${["Owner","Tenant","Vacant"].map(v=>`<button type="button" class="${(f.occupancy||"Owner")===v?"on":""}" data-occ="${v}">${v==="Owner"?"Owner-occupied":v==="Tenant"?"Rented":"Vacant"}</button>`).join("")}</div><input type="hidden" name="occupancy" value="${esc(f.occupancy||"Owner")}"></div>
     <div class="frow"><div class="f"><label>Owner name</label><input name="owner" maxlength="60" value="${esc(f.owner)}"></div>
@@ -552,19 +911,19 @@ function sheetFlatForm(id){
     </div>
     <div class="f"><label>Email</label><input name="email" type="email" maxlength="80" value="${esc(f.email)}"></div>
     <div class="frow"><div class="f"><label>Family members</label><input name="members" type="number" min="0" max="30" value="${esc(f.members)}"></div>
-    <div class="f"><label>Area (sq ft)</label><input name="area" type="number" min="0" value="${esc(f.area)}"></div></div>
+    <div class="f" ${own?"hidden":""}><label>Area (sq ft)</label><input name="area" type="number" min="0" value="${esc(f.area)}"></div></div>
     <div class="frow"><div class="f"><label>Vehicle no(s).</label><input name="vehicle" maxlength="60" value="${esc(f.vehicle)}" placeholder="MH12 AB 1234"></div>
     <div class="f"><label>Parking slot</label><input name="parking" maxlength="20" value="${esc(f.parking)}"></div></div>
-    <div class="f"><label>Monthly maintenance (₹) — blank uses default ${inr(S.settings.amount)}</label><input name="amount" type="number" min="0" inputmode="numeric" value="${esc(f.amount)}"></div>
-    <div class="f"><label>Maintenance applies from (month)</label><input name="since" type="month" value="${esc(f.since||(id?"":curMonth()))}"></div>
+    <div class="f" ${own?"hidden":""}><label>Monthly maintenance (₹) — blank uses default ${inr(S.settings.amount)}</label><input name="amount" type="number" min="0" inputmode="numeric" value="${esc(f.amount)}"></div>
+    <div class="f" ${own?"hidden":""}><label>Maintenance applies from (month)</label><input name="since" type="month" value="${esc(f.since||(id?"":curMonth()))}"></div>
     <div class="f"><label>Notes</label><textarea name="notes" maxlength="500">${esc(f.notes)}</textarea></div>
     <button class="btn block" type="submit">${id?"Save changes":"Add flat"}</button>
-    ${id?`<button class="btn danger block mt" type="button" data-a="delFlat" data-id="${esc(id)}">Delete flat</button>`:""}
+    ${id&&canManage()?`<button class="btn danger block mt" type="button" data-a="delFlat" data-id="${esc(id)}">Delete flat</button>`:""}
   </form>`);
 }
 function sheetPay(flatId){
   const f=S.flats.find(x=>x.id===flatId);if(!f)return;const r=payRec(month,flatId)||{};
-  const ro=!editable();
+  const ro=!canPay();
   openSheet(`<h3>Flat ${esc(f.number)} · ${esc(monthLabel(month,true))} ${closeBtn()}</h3>
   <form id="fPay" data-id="${esc(flatId)}">
     <div class="frow"><div class="f"><label>Amount (₹)</label><input name="amount" type="number" min="0" required inputmode="numeric" value="${esc(r.amount||flatAmount(f))}" ${ro?"disabled":""}></div>
@@ -618,7 +977,7 @@ async function copyText(t){
 
 /* ---------- events ---------- */
 document.addEventListener("click",async e=>{
-  const t=e.target.closest("[data-tab],[data-go],[data-a],[data-ff],[data-df],[data-seg],[data-flat],[data-pay],[data-act],[data-occ]");
+  const t=e.target.closest("[data-tab],[data-go],[data-a],[data-ff],[data-df],[data-seg],[data-flat],[data-pay],[data-act],[data-occ],[data-ann],[data-cmp],[data-cseg],[data-rp],[data-stmt]");
   if(!t)return;
   if(t.dataset.occ){e.preventDefault();const f=$("#fFlat");f.occupancy.value=t.dataset.occ;document.querySelectorAll("#occSeg button").forEach(b=>b.classList.toggle("on",b===t));$("#tenantBox").hidden=t.dataset.occ!=="Tenant";return}
   if(t.dataset.tab){tab=t.dataset.tab;history.replaceState(null,"","#"+tab);if(tab==="dues")month=month||curMonth();render();scrollTo(0,0);return}
@@ -627,12 +986,31 @@ document.addEventListener("click",async e=>{
   if(t.dataset.df){duesFilter=t.dataset.df;render();return}
   if(t.dataset.seg){actSeg=t.dataset.seg;render();return}
   if(t.dataset.pay){sheetPay(t.dataset.pay);return}
+  if(t.dataset.stmt){sheetStatement(t.dataset.stmt);return}
+  if(t.dataset.ann){sheetAnn(t.dataset.ann);return}
+  if(t.dataset.cmp){sheetCmp(t.dataset.cmp);return}
+  if(t.dataset.cseg){cmpSeg=t.dataset.cseg;render();return}
+  if(t.dataset.rp){rpt.period=t.dataset.rp;render();return}
   if(t.dataset.flat){sheetFlat(t.dataset.flat);return}
   if(t.dataset.act&&!t.dataset.a){sheetAct(t.dataset.act);return}
   const a=t.dataset.a,id=t.dataset.id;
   switch(a){
     case"close":closeSheet();break;
     case"signin":signIn();break;
+    case"joinEdit":openSheet(`<h3>My flat ${closeBtn()}</h3>${joinForm()}`);break;
+    case"okMember":decideMember(id,"approved");break;
+    case"rejMember":sheetConfirm("Reject this request? They can correct and send it again.","Reject","rejMemberYes",id);break;
+    case"rejMemberYes":closeSheet();decideMember(id,"rejected");break;
+    case"rmMember":sheetConfirm("Remove this person's access to the app?","Remove","rmMemberYes",id);break;
+    case"rmMemberYes":closeSheet();removeMember(id);break;
+    case"editAnn":sheetAnnForm(id);break;
+    case"delAnn":sheetConfirm("Delete this announcement for everyone?","Delete","delAnnYes",id);break;
+    case"delAnnYes":closeSheet();deleteAnn(id);toast("Announcement deleted");break;
+    case"delCmp":sheetConfirm("Delete this complaint permanently?","Delete","delCmpYes",id);break;
+    case"delCmpYes":closeSheet();deleteComplaint(id);toast("Complaint deleted");break;
+    case"csv":downloadCSV();break;
+    case"print":window.print();break;
+    case"copyAnn":{const x=S.anns.find(y=>y.id===id);if(x)copyText(`${x.important?"🔴":"📢"} *${x.title}*\n\n${x.body}\n\n— ${S.settings.name||"Society"} Managing Committee`);break;}
     case"signout":closeSheet();F.signOut(auth);break;
     case"claim":claimAdmin();break;
     case"rmAdmin":sheetConfirm("Remove "+id+" from the committee? They will only be able to view.","Remove","rmAdminYes",id);break;
@@ -659,18 +1037,47 @@ document.addEventListener("click",async e=>{
   }
 });
 $("#scrim").addEventListener("click",closeSheet);
-$("#fab").addEventListener("click",()=>{if(tab==="flats")sheetFlatForm();else sheetActForm()});
+$("#fab").addEventListener("click",()=>{if(tab==="flats")sheetFlatForm();else if(tab==="notices")sheetAnnForm();else if(tab==="help")sheetCmpForm();else sheetActForm()});
+document.addEventListener("change",e=>{
+  const s=e.target;
+  if(s.dataset&&s.dataset.roleEmail){setAdmin(s.dataset.roleEmail,{role:s.value});toast("Role updated");}
+  if(s.id==="cmpAnon"){$("#cmpWho").hidden=s.checked}
+  if(s.id==="rpFrom"||s.id==="rpTo"){rpt.from=$("#rpFrom").value;rpt.to=$("#rpTo").value;render()}
+});
 document.addEventListener("input",e=>{
   if(e.target.id==="flatQ"){flatQ=e.target.value;render._focusQ=true;render();render._focusQ=false}
   if(e.target.closest("#fBulk"))bulkPreview();
 });
-window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(["home","flats","dues","activities"].includes(h)&&h!==tab){tab=h;render()}});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(VIEWS.includes(h)&&h!==tab){tab=h;render()}});
 document.addEventListener("submit",async e=>{
   e.preventDefault();const f=e.target,fd=new FormData(f);
-  if(f.id==="fAdmin"){addAdmin(fd.get("email"));sheetSettings();return}
+  if(f.id==="fJoin"){submitJoin(fd);return}
+  if(f.id==="fAdmin"){addAdmin(fd.get("email"),fd.get("name"),fd.get("role"));sheetSettings();return}
+  if(f.id==="fAnn"){
+    const id=f.dataset.id||"";const old=S.anns.find(a=>a.id===id)||{};
+    const body={title:str(fd.get("title"),100),body:str(fd.get("body"),3000),important:!!fd.get("important"),createdAt:old.createdAt||new Date().toISOString(),byRole:old.byRole||myRole()||"",byEmail:old.byEmail||myEmail()};
+    if(!id)lsSet("annSeen",body.createdAt);
+    closeSheet();if(await saveAnn(id,body))toast(id?"Announcement updated":"Announcement posted");return;
+  }
+  if(f.id==="fCmp"){
+    const anon=!!fd.get("anonymous");const now=new Date().toISOString();
+    const body={title:str(fd.get("title"),100),details:str(fd.get("details"),2000),category:CMP_CATS[fd.get("category")]?fd.get("category"):"Other",anonymous:anon,status:"Open",createdAt:now,updatedAt:now};
+    if(!anon){body.byEmail=myEmail();body.byName=str(fd.get("byName"),60);body.flat=str(fd.get("flat"),12)}
+    closeSheet();if(addComplaint(body))toast(anon?"Complaint submitted anonymously":"Complaint submitted");return;
+  }
+  if(f.id==="fCmpUpd"){
+    const st=Object.keys(CMP_ST).includes(fd.get("status"))?fd.get("status"):"Open";
+    closeSheet();if(updateComplaint(f.dataset.id,{status:st,reply:str(fd.get("reply"),1500),updatedAt:new Date().toISOString(),repliedBy:myRole()||""}))toast("Complaint updated");return;
+  }
   if(f.id==="fSettings"){
     const body={name:str(fd.get("name"),80),address:str(fd.get("address"),120),amount:num(fd.get("amount")),dueDay:Math.min(28,Math.max(1,Math.floor(num(fd.get("dueDay"))||10))),upi:str(fd.get("upi"),80)};
     closeSheet();if(await saveSettings(body))toast("Society details saved");
+  }
+  if(f.id==="fFlat"&&f.dataset.owner==="1"){
+    const id=f.dataset.id;const occ=["Owner","Tenant","Vacant"].includes(fd.get("occupancy"))?fd.get("occupancy"):"Owner";
+    const patch={occupancy:occ,owner:str(fd.get("owner"),60),phone:str(fd.get("phone"),16),tenant:occ==="Tenant"?str(fd.get("tenant"),60):"",tenantPhone:occ==="Tenant"?str(fd.get("tenantPhone"),16):"",
+      leaseEnd:occ==="Tenant"?str(fd.get("leaseEnd"),10):"",email:str(fd.get("email"),80),members:num(fd.get("members"))||"",vehicle:str(fd.get("vehicle"),60),parking:str(fd.get("parking"),20),notes:str(fd.get("notes"),500)};
+    closeSheet();if(await saveFlatOwner(id,patch))toast("Your details are updated");return;
   }
   if(f.id==="fFlat"){
     const id=f.dataset.id||"";const number=str(fd.get("number"),12);
