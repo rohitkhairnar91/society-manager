@@ -69,6 +69,12 @@ service cloud.firestore {
     match /expenses/{id}        { allow read: if canRead(); allow write: if canAccounts(); }
     match /bills/{id}           { allow read: if canRead(); allow write: if canAccounts(); }
 
+    match /cmpPhotos/{id} {
+      allow get: if isCommittee() || (canRead() && (get(/databases/$(database)/documents/complaints/$(id)).data.anonymous == true || get(/databases/$(database)/documents/complaints/$(id)).data.get('byEmail', '') == myEmail()));
+      allow create: if canRead() && !exists(/databases/$(database)/documents/complaints/$(id)) && existsAfter(/databases/$(database)/documents/complaints/$(id))
+        && request.resource.data.keys().hasOnly(['imgs', 'at']) && request.resource.data.imgs is list && request.resource.data.imgs.size() <= 3;
+      allow delete: if canManage();
+    }
     match /complaints/{id} {
       allow create: if canRead()
         && request.resource.data.status == 'Open'
