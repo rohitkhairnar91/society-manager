@@ -244,6 +244,7 @@ const MR_RX=[[/^(\d+) paid · (\d+) pending$/,"$1 भरले · $2 बाक�
 [/^(₹[\d,]+)\/month$/,"$1/महिना"],
 [/^Make me the admin \((.*)\)$/,"मला प्रशासक करा ($1)"],
 [/^Added (.+)$/,"$1 जोडले"],
+[/^(\d+) flats updated with residents' details$/,"$1 फ्लॅटमध्ये रहिवाशांची माहिती भरली"],
 [/^Last backup (\d+) days ago$/,"शेवटचा बॅकअप $1 दिवसांपूर्वी"],
 [/^Backup downloaded \((\d+) records\)$/,"बॅकअप डाउनलोड झाला ($1 नोंदी)"],
 [/^Restored (\d+) records$/,"$1 नोंदी परत आणल्या"],
@@ -362,7 +363,7 @@ function onErr(e){
 }
 function stopAll(){[...unsubs,...cmpUnsubs,...Object.values(anonUnsubs)].forEach(u=>{try{u()}catch(e){}});unsubs=[];cmpUnsubs=[];anonUnsubs={};cmpScope=null;cmpMain=[];cmpAnon={};S.anns=[];S.mtgs=[];S.exps=[]}
 function subscribe(){
-  Object.keys(got).forEach(k=>got[k]=false);canWrite=null;myMember=undefined;adminsLoaded=false;dataOn=false;membersOn=false;members=[];
+  Object.keys(got).forEach(k=>got[k]=false);canWrite=null;myMember=undefined;adminsLoaded=false;dataOn=false;membersOn=false;members=[];membersLoaded=false;backfillDone=false;
   const {onSnapshot,doc,collection}=F;
   unsubs.push(onSnapshot(collection(db,"admins"),s=>{adminRoles={};s.docs.forEach(d=>adminRoles[d.id]=d.data());admins=s.docs.map(d=>d.id).sort();canWrite=admins.includes(myEmail());adminsLoaded=true;if(dataOn)subComplaints();evalAccess()},e=>{adminsLoaded=true;evalAccess()}));
   unsubs.push(onSnapshot(doc(db,"members",myEmail()),s=>{myMember=s.exists()?s.data():null;evalAccess()},e=>{myMember=null;evalAccess()}));
@@ -373,7 +374,7 @@ function subscribeData(){
   loadTimer=setTimeout(()=>{if(!allGot()){setBanner(navigator.onLine?"Still loading… your connection may be slow.":"You're offline — showing saved data.");Object.keys(got).forEach(k=>got[k]=true);render()}},10000);
   const {onSnapshot,doc,collection}=F;
   unsubs.push(onSnapshot(doc(db,"config","society"),s=>{S.settings=s.exists()?{...DEF_SETTINGS,...s.data()}:{...DEF_SETTINGS};onSnap("settings")},onErr));
-  unsubs.push(onSnapshot(collection(db,"flats"),s=>{S.flats=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("flats");syncFlatIndex()},onErr));
+  unsubs.push(onSnapshot(collection(db,"flats"),s=>{S.flats=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("flats");syncFlatIndex();backfillFlats()},onErr));
   unsubs.push(onSnapshot(collection(db,"dues"),s=>{const o={};s.docs.forEach(d=>o[d.id]=d.data());S.dues=o;onSnap("dues")},onErr));
   unsubs.push(onSnapshot(collection(db,"activities"),s=>{S.acts=s.docs.map(d=>({id:d.id,...d.data()}));onSnap("acts")},onErr));
   unsubs.push(onSnapshot(F.query(collection(db,"announcements"),F.orderBy("createdAt","desc"),F.limit(100)),s=>{S.anns=s.docs.map(d=>({id:d.id,...d.data()}));render()},()=>{}));
@@ -709,7 +710,7 @@ function access(){
 function evalAccess(){
   if(access()==="ok"&&!dataOn){dataOn=true;subscribeData()}
   if(mode==="db"&&canManage()&&!membersOn){membersOn=true;
-    unsubs.push(F.onSnapshot(F.collection(db,"members"),s=>{members=s.docs.map(d=>({id:d.id,...d.data()}));render()},()=>{}));}
+    unsubs.push(F.onSnapshot(F.collection(db,"members"),s=>{members=s.docs.map(d=>({id:d.id,...d.data()}));membersLoaded=true;backfillFlats();render()},()=>{}));}
   render();
 }
 function syncFlatIndex(){
@@ -751,9 +752,36 @@ function submitJoin(fd){
   myMember=body;render();closeSheet();
   run(()=>F.setDoc(F.doc(db,"members",myEmail()),body));toast("Request sent to the committee");
 }
+// Copy an approved resident's details into their flat record.
+// add=true (on approval): a second owner/tenant is added alongside the first. add=false (catch-up): only fills empty fields.
+function memberFlatPatch(m,f,add){
+  if(!m||!f||!m.name)return null;
+  const has=(list,n)=>String(list||"").toLowerCase().split(/\s*[,&]\s*/).includes(String(n).toLowerCase());
+  const p={};
+  if(m.relation==="Owner"){
+    if(!f.owner)p.owner=m.name;else if(add&&!has(f.owner,m.name))p.owner=f.owner+", "+m.name;
+    if(!f.phone&&m.phone)p.phone=m.phone;
+    if(!f.email&&m.email)p.email=m.email;
+    if(f.occupancy==="Vacant"&&!f.exempt)p.occupancy="Owner";
+  }else if(m.relation==="Tenant"){
+    if(!f.tenant)p.tenant=m.name;else if(add&&!has(f.tenant,m.name))p.tenant=f.tenant+", "+m.name;
+    if(!f.tenantPhone&&m.phone)p.tenantPhone=m.phone;
+    if(f.occupancy!=="Tenant")p.occupancy="Tenant";
+  }else return null;
+  return Object.keys(p).length?p:null;
+}
+function syncMemberToFlat(m,add){const f=S.flats.find(x=>x.id===m.flatId);const p=memberFlatPatch(m,f,add);if(p)saveFlatOwner(f.id,p);return !!p}
+let backfillDone=false,membersLoaded=false;
+function backfillFlats(){
+  if(backfillDone||!membersLoaded||!got.flats||!canManage()||mode!=="db")return;
+  backfillDone=true;let n=0;
+  members.filter(m=>m.status==="approved").forEach(m=>{if(syncMemberToFlat(m,false))n++});
+  if(n)toast(n+" flats updated with residents' details");
+}
 function decideMember(email,status){
   const i=members.findIndex(m=>m.id===email);if(i>=0)members[i]={...members[i],status};
   run(()=>F.updateDoc(F.doc(db,"members",email),{status,decidedBy:myEmail(),decidedAt:new Date().toISOString()}));
+  if(status==="approved"&&i>=0)syncMemberToFlat(members[i],true);
   toast(status==="approved"?"Approved":"Request rejected");
 }
 function removeMember(email){members=members.filter(m=>m.id!==email);run(()=>F.deleteDoc(F.doc(db,"members",email)));toast("Access removed")}
