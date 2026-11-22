@@ -7,7 +7,6 @@ service cloud.firestore {
     function adminPath() { return /databases/$(database)/documents/admins/$(myEmail()); }
     function memberPath() { return /databases/$(database)/documents/members/$(myEmail()); }
     function setupPath() { return /databases/$(database)/documents/config/setup; }
-    // The person who set up the app (first admin) is the permanent App admin with full rights.
     function isOwner() { return verified() && exists(setupPath()) && get(setupPath()).data.firstAdmin == myEmail(); }
     function isAdminDoc() { return verified() && exists(adminPath()); }
     function role() { return get(adminPath()).data.get('role', 'chairman'); }
@@ -18,15 +17,13 @@ service cloud.firestore {
     function canRead() { return isCommittee() || isResident(); }
     function ownsFlat(flatId) { return isResident() && get(memberPath()).data.flatId == flatId && get(memberPath()).data.relation in ['Owner', 'Tenant']; }
     function joinKeys() { return ['email', 'name', 'phone', 'flatId', 'flatNumber', 'relation', 'status', 'requestedAt']; }
+    function cmpPath(id) { return /databases/$(database)/documents/complaints/$(id); }
 
-    // App admin can read and write everything (needed to restore a backup).
     match /{document=**} { allow read, write: if isOwner(); }
 
-    // Managing committee. Document id = lower-case email. Field role: chairman | secretary | treasurer | member
     match /admins/{email} {
       allow read: if signedIn();
       allow create, update, delete: if canManage();
-      // First-time setup only: the first person claims admin together with config/setup.
       allow create: if verified() && email == myEmail()
         && !exists(/databases/$(database)/documents/config/setup)
         && existsAfter(/databases/$(database)/documents/config/setup);
@@ -36,12 +33,10 @@ service cloud.firestore {
       allow create: if verified() && existsAfter(adminPath()) && request.resource.data.firstAdmin == myEmail();
       allow update, delete: if false;
     }
-    // Flat numbers only (no names/phones) so new users can pick their flat.
     match /config/flatIndex { allow read: if signedIn(); allow write: if canManage(); }
     match /config/society { allow read: if canRead(); allow write: if canManage() || canAccounts(); }
     match /config/backup { allow read: if isCommittee(); allow write: if canManage(); }
 
-    // Residents' join requests. Document id = lower-case email.
     match /members/{email} {
       allow get: if verified() && (email == myEmail() || isCommittee());
       allow list: if isCommittee();
@@ -62,17 +57,19 @@ service cloud.firestore {
         || (ownsFlat(id) && request.resource.data.diff(resource.data).affectedKeys()
               .hasOnly(['owner', 'phone', 'tenant', 'tenantPhone', 'leaseEnd', 'email', 'members', 'vehicle', 'parking', 'notes', 'occupancy']));
     }
-    match /dues/{month}         { allow read: if canRead(); allow write: if canAccounts(); }
-    match /activities/{id}      { allow read: if canRead(); allow write: if isCommittee(); }
-    match /announcements/{id}   { allow read: if canRead(); allow write: if isCommittee(); }
-    match /meetings/{id}        { allow read: if canRead(); allow write: if canManage(); }
-    match /expenses/{id}        { allow read: if canRead(); allow write: if canAccounts(); }
-    match /bills/{id}           { allow read: if canRead(); allow write: if canAccounts(); }
+    match /dues/{month}       { allow read: if canRead(); allow write: if canAccounts(); }
+    match /activities/{id}    { allow read: if canRead(); allow write: if isCommittee(); }
+    match /announcements/{id} { allow read: if canRead(); allow write: if isCommittee(); }
+    match /meetings/{id}      { allow read: if canRead(); allow write: if canManage(); }
+    match /expenses/{id}      { allow read: if canRead(); allow write: if canAccounts(); }
+    match /bills/{id}         { allow read: if canRead(); allow write: if canAccounts(); }
 
     match /cmpPhotos/{id} {
-      allow get: if isCommittee() || (canRead() && (get(/databases/$(database)/documents/complaints/$(id)).data.anonymous == true || get(/databases/$(database)/documents/complaints/$(id)).data.get('byEmail', '') == myEmail()));
-      allow create: if canRead() && !exists(/databases/$(database)/documents/complaints/$(id)) && existsAfter(/databases/$(database)/documents/complaints/$(id))
-        && request.resource.data.keys().hasOnly(['imgs', 'at']) && request.resource.data.imgs is list && request.resource.data.imgs.size() <= 3;
+      allow get: if isCommittee()
+        || (canRead() && (get(cmpPath(id)).data.anonymous == true || get(cmpPath(id)).data.get('byEmail', '') == myEmail()));
+      allow create: if canRead() && !exists(cmpPath(id)) && existsAfter(cmpPath(id))
+        && request.resource.data.keys().hasOnly(['imgs', 'at'])
+        && request.resource.data.imgs is list && request.resource.data.imgs.size() <= 3;
       allow delete: if canManage();
     }
     match /complaints/{id} {
@@ -84,12 +81,12 @@ service cloud.firestore {
         && ((request.resource.data.anonymous == true
               && !('byEmail' in request.resource.data) && !('byName' in request.resource.data) && !('flat' in request.resource.data))
             || (request.resource.data.anonymous == false && request.resource.data.byEmail == myEmail()));
-      // Anonymous complaints can be opened by id (only the author's phone knows it); named ones by their author.
       allow get: if isCommittee() || (canRead() && (resource.data.anonymous == true || resource.data.byEmail == myEmail()));
       allow list: if isCommittee() || (canRead() && resource.data.byEmail == myEmail());
       allow update: if isCommittee()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'reply', 'updatedAt', 'repliedBy']);
       allow delete: if canManage();
     }
+    // END OF RULES
   }
 }
